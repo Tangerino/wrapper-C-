@@ -2,3 +2,10 @@
 
 # WIMD.IO API C# wrapper library
 
+
+
+
+
+
+# License
+See license file
