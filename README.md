@@ -1,2 +1,3 @@
-# wrapper-C-
-WIMD.IP API C# wrapper library
+
+
+WIMD.IO API C# wrapper library
