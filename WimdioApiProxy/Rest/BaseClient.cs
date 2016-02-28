@@ -113,14 +113,18 @@ namespace WimdioApiProxy.v2.Rest
                     if (!string.IsNullOrWhiteSpace(responseString))
                     {
                         var errorResult = Serializer.Deserialize<ErrorResponse>(responseString);
-                        throw new ApplicationException($"RESTful '{method}' {verb.ToString().ToUpper()} failed with code: '{(int)errorResponse.StatusCode}', message: '{errorResult?.Error ?? errorResult?.Status ?? "NULL"}'");
+
+                        log.Error($"RESTful '{method}' {verb.ToString().ToUpper()} failed with code: '{(int)errorResponse.StatusCode}', message: '{errorResult?.Error ?? errorResult?.Status ?? "NULL"}'", we);
+                        throw;
                     }
                 }
             }
             catch(Exception ex)
             {
                 request?.Abort();
-                throw ex;
+
+                log.Error(ex.Message, ex);
+                throw;
             }
 
             return result;
@@ -151,7 +155,9 @@ namespace WimdioApiProxy.v2.Rest
             catch (Exception ex)
             {
                 request?.Abort();
-                throw ex;
+
+                log.Error(ex.Message, ex);
+                throw;
             }
         }
     }

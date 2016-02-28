@@ -55,6 +55,11 @@
     <Compile Include="DataTransferObjects\BasicResponse.cs" />
     <Compile Include="DataTransferObjects\Accounts\LoginResponse.cs" />
     <Compile Include="DataTransferObjects\Accounts\Permissions.cs" />
+    <Compile Include="DataTransferObjects\Users\BaseUser.cs" />
+    <Compile Include="DataTransferObjects\Users\NewUser.cs" />
+    <Compile Include="DataTransferObjects\Users\Permission.cs" />
+    <Compile Include="DataTransferObjects\Users\UpdateUser.cs" />
+    <Compile Include="DataTransferObjects\Users\User.cs" />
     <Compile Include="Helpers\AsciiRequestWriter.cs" />
     <Compile Include="Helpers\IRequestDataWriter.cs" />
     <Compile Include="Helpers\IResponseDataReader.cs" />
@@ -69,6 +74,7 @@
     <Compile Include="Rest\RestUriBuilder.cs" />
     <Compile Include="WimdioApiClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WimdioApiClientException.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DataTransferObjects\Devices\" />
@@ -81,7 +87,6 @@
     <Folder Include="DataTransferObjects\ShadowDevice\" />
     <Folder Include="DataTransferObjects\Things\" />
     <Folder Include="DataTransferObjects\TimeSeries\" />
-    <Folder Include="DataTransferObjects\Users\" />
     <Folder Include="DataTransferObjects\VirtualSensor\" />
   </ItemGroup>
   <ItemGroup>
