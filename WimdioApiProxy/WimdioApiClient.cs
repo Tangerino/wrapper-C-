@@ -1,9 +1,13 @@
 ﻿using log4net;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using WimdioApiProxy.v2.Rest;
 using WimdioApiProxy.v2.DataTransferObjects;
 using WimdioApiProxy.v2.DataTransferObjects.Accounts;
-using WimdioApiProxy.v2.Rest;
+using WimdioApiProxy.v2.DataTransferObjects.Users;
+using Newtonsoft.Json;
 
 namespace WimdioApiProxy.v2
 {
@@ -14,38 +18,34 @@ namespace WimdioApiProxy.v2
 
         private readonly ILog _log = LogManager.GetLogger(typeof(WimdioApiClient));
 
-        public async Task<string> Login(Credentials credentials)
+        public async Task Login(Credentials credentials)
         {
             try
             {
                 var client = new AuthenticationClient(_baseUrl);
 
                 _apiKey = (await client.Post<LoginResponse>("account/login", credentials))?.ApiKey;
-
-                return null;
             }
             catch (Exception ex)
             {
                 _log.Error($"Login(credentials.Email={credentials.Email}) failed", ex);
 
-                return ex.Message;
+                throw new WimdioApiClientException(ex.Message, ex);
             }
         }
-        public async Task<string> Logout()
+        public async Task Logout()
         {
             try
             {
                 var client = new ApiRequestClient(_baseUrl, _apiKey);
 
                 var response = await client.Post<BasicResponse>("account/logout", new EmptyObject());
-
-                return null;
             }
             catch (Exception ex)
             {
                 _log.Error($"Logout() failed", ex);
 
-                return ex.Message;
+                throw new WimdioApiClientException(ex.Message, ex);
             }
         }
 
@@ -63,24 +63,7 @@ namespace WimdioApiProxy.v2
             {
                 _log.Error($"ChangePassword(credentials.Email={credentials.Email}) failed", ex);
 
-                return ex.Message;
-            }
-        }
-        public async Task<string> ChangePermissions(int userId, Permissions permissions)
-        {
-            try
-            {
-                var client = new ApiRequestClient(_baseUrl, _apiKey);
-
-                var response = await client.Post<BasicResponse>($"user/permissions/{userId}", permissions);
-
-                return null;
-            }
-            catch (Exception ex)
-            {
-                _log.Error($"ChangePermissions(userId={userId}, permissions) failed", ex);
-
-                return ex.Message;
+                throw new WimdioApiClientException(ex.Message, ex);
             }
         }
         public async Task<string> ResetAccount(Account account)
@@ -97,42 +80,38 @@ namespace WimdioApiProxy.v2
             {
                 _log.Error($"ResetAccount(account.Email={account.Email}) failed", ex);
 
-                return ex.Message;
+                throw new WimdioApiClientException(ex.Message, ex);
             }
         }
 
-        public async Task<string> CreatePocket(string pocketName, object obj)
+        public async Task CreatePocket(string pocketName, object pocket)
         {
             try
             {
                 var client = new ApiRequestClient(_baseUrl, _apiKey);
 
-                var response = await client.Post<BasicResponse>($"account/pocket/{pocketName}", obj);
-
-                return null;
+                var response = await client.Post<BasicResponse>($"account/pocket/{pocketName}", pocket);
             }
             catch (Exception ex)
             {
-                _log.Error($"CreatePocket(pocketName={pocketName}, obj='{obj}') failed", ex);
+                _log.Error($"CreatePocket(pocketName={pocketName}, pocket='{JsonConvert.SerializeObject(pocket)}') failed", ex);
 
-                return ex.Message;
+                throw new WimdioApiClientException(ex.Message, ex);
             }
         }
-        public async Task<string> DeletePocket(string pocketName)
+        public async Task DeletePocket(string pocketName)
         {
             try
             {
                 var client = new ApiRequestClient(_baseUrl, _apiKey);
 
                 var response = await client.Delete<BasicResponse>($"account/pocket/{pocketName}");
-
-                return null;
             }
             catch (Exception ex)
             {
                 _log.Error($"DeletePocket(pocketName={pocketName}) failed", ex);
 
-                return ex.Message;
+                throw new WimdioApiClientException(ex.Message, ex);
             }
         }
         public async Task<dynamic> ReadPocket(string pocketName)
@@ -149,7 +128,100 @@ namespace WimdioApiProxy.v2
             {
                 _log.Error($"ReadPocket(pocketName={pocketName}) failed", ex);
 
-                return ex.Message;
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+
+        public async Task<IEnumerable<User>> ReadUsers()
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                var response = await client.Get<User[]>("users");
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"ReadUsers() failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<User> CreateUser(NewUser user)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return (await client.Post<User[]>("user", user))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"CreateUser(user={JsonConvert.SerializeObject(user)}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<User> ReadUser(Guid userId)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return (await client.Get<User[]>($"user/{userId}"))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"ReadUser(userId={userId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<User> UpdateUser(Guid userId, UpdateUser user)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return (await client.Put<User[]>($"user/{userId}", user))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"UpdateUser(userId={userId}, user={JsonConvert.SerializeObject(user)}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task DeleteUser(Guid userId)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                await client.Delete<BasicResponse>($"user/{userId}");
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"DeleteUser(userId={userId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<User> ChangePermissions(Guid userId, Permission permissions)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return (await client.Post<User[]>($"user/permissions/{userId}", new { permissions }))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"ChangePermissions(userId={userId}, permissions) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
             }
         }
     }

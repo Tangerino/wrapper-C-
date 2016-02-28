@@ -7,7 +7,7 @@ using WimdioApiProxy.v2.DataTransferObjects.Accounts;
 namespace WimdioApiProxy.v2.Tests
 {
     [TestClass()]
-    public class WimdioApiClientTests
+    public partial class WimdioApiClientTests
     {
         private readonly Credentials _credentials = new Credentials
         {
@@ -19,10 +19,7 @@ namespace WimdioApiProxy.v2.Tests
         {
             var client = new WimdioApiClient();
 
-            var error = await client.Login(_credentials);
-
-            if (!string.IsNullOrEmpty(error))
-                throw new Exception(error);
+            await client.Login(_credentials);
 
             return client;
         }
@@ -41,16 +38,13 @@ namespace WimdioApiProxy.v2.Tests
         [TestMethod()]
         public void Logout_Positive()
         {
-            string actual = null;
-
             Func<Task> asyncFunction = async () =>
             {
                 var client = await GetAuthorizedClient();
-                actual = await client.Logout();
+                await client.Logout();
             };
 
             asyncFunction.ShouldNotThrow("Method should not throw");
-            actual.Should().BeNullOrEmpty("Error was not expected");
         }
 
         [TestMethod()]
@@ -68,23 +62,6 @@ namespace WimdioApiProxy.v2.Tests
 
             asyncFunction.ShouldNotThrow("Method should not throw");
             actual.Should().Be(expected, "Method should return specific message");
-        }
-
-        [TestMethod()]
-        public void ChangePermissions_Positive()
-        {
-            const int userId = 12345;
-            var permissions = new Permissions { Read = true };
-            string actual = null;
-
-            Func<Task> asyncFunction = async () =>
-            {
-                var client = await GetAuthorizedClient();
-                actual = await client.ChangePermissions(userId, permissions);
-            };
-
-            asyncFunction.ShouldNotThrow("Method should not throw");
-            actual.Should().BeNullOrEmpty("Method should not return error");
         }
 
         [TestMethod()]
@@ -109,25 +86,21 @@ namespace WimdioApiProxy.v2.Tests
         {
             var pocketName = "TestPocketName";
             IWimdioApiClient client = null;
-            string createResult = null;
-            string deleteResult = null;
             var expected = new { favorites1 = "dashboards", favorites2 = "alarms" };
             object actual = null;
 
             Func<Task> asyncFunction = async () =>
             {
                 client = await GetAuthorizedClient();
-                createResult = await client.CreatePocket(pocketName, expected);
+                await client.CreatePocket(pocketName, expected);
 
                 actual = await client.ReadPocket(pocketName);
 
-                deleteResult = await client.DeletePocket(pocketName);
+                await client.DeletePocket(pocketName);
             };
 
             asyncFunction.ShouldNotThrow("Method should not throw");
-            createResult.Should().BeNullOrEmpty("Method should not return error");
             actual.Should().NotBeNull("Pocket content expected");
-            deleteResult.Should().BeNullOrEmpty("Method should not return error");
         }
     }
 }
