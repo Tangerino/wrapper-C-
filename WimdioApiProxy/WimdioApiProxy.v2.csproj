@@ -55,6 +55,12 @@
     <Compile Include="DataTransferObjects\BasicResponse.cs" />
     <Compile Include="DataTransferObjects\Accounts\LoginResponse.cs" />
     <Compile Include="DataTransferObjects\Accounts\Permissions.cs" />
+    <Compile Include="DataTransferObjects\NormalizationFactors\NewNormalizationFactor.cs" />
+    <Compile Include="DataTransferObjects\Things\NewThing.cs" />
+    <Compile Include="DataTransferObjects\Places\NewPlace.cs" />
+    <Compile Include="DataTransferObjects\NormalizationFactors\NormalizationFactor.cs" />
+    <Compile Include="DataTransferObjects\Things\Thing.cs" />
+    <Compile Include="DataTransferObjects\Places\Place.cs" />
     <Compile Include="DataTransferObjects\Users\BaseUser.cs" />
     <Compile Include="DataTransferObjects\Users\NewUser.cs" />
     <Compile Include="DataTransferObjects\Users\Permission.cs" />
@@ -80,12 +86,9 @@
     <Folder Include="DataTransferObjects\Devices\" />
     <Folder Include="DataTransferObjects\DropBox\" />
     <Folder Include="DataTransferObjects\Etl\" />
-    <Folder Include="DataTransferObjects\NormalizationFactors\" />
-    <Folder Include="DataTransferObjects\Places\" />
     <Folder Include="DataTransferObjects\RemoteSensors\" />
     <Folder Include="DataTransferObjects\Sensors\" />
     <Folder Include="DataTransferObjects\ShadowDevice\" />
-    <Folder Include="DataTransferObjects\Things\" />
     <Folder Include="DataTransferObjects\TimeSeries\" />
     <Folder Include="DataTransferObjects\VirtualSensor\" />
   </ItemGroup>

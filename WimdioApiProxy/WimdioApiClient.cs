@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using WimdioApiProxy.v2.Rest;
 using WimdioApiProxy.v2.DataTransferObjects;
 using WimdioApiProxy.v2.DataTransferObjects.Accounts;
+using WimdioApiProxy.v2.DataTransferObjects.Places;
+using WimdioApiProxy.v2.DataTransferObjects.Things;
 using WimdioApiProxy.v2.DataTransferObjects.Users;
 using Newtonsoft.Json;
 
@@ -48,7 +50,6 @@ namespace WimdioApiProxy.v2
                 throw new WimdioApiClientException(ex.Message, ex);
             }
         }
-
         public async Task<string> ChangePassword(Credentials credentials)
         {
             try
@@ -83,7 +84,6 @@ namespace WimdioApiProxy.v2
                 throw new WimdioApiClientException(ex.Message, ex);
             }
         }
-
         public async Task CreatePocket(string pocketName, object pocket)
         {
             try
@@ -220,6 +220,145 @@ namespace WimdioApiProxy.v2
             catch (Exception ex)
             {
                 _log.Error($"ChangePermissions(userId={userId}, permissions) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+
+        public async Task<IEnumerable<Place>> ReadPlaces()
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                var response = await client.Get<Place[]>("places");
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"ReadPlaces() failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<Place> CreatePlace(NewPlace place)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return (await client.Post<Place[]>("place", place))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"CreatePlace(place={JsonConvert.SerializeObject(place)}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<Place> ReadPlace(Guid placeId)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return (await client.Get<Place[]>($"place/{placeId}"))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"ReadPlace(placeId={placeId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<Place> UpdatePlace(Guid placeId, NewPlace place)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return (await client.Put<Place[]>($"place/{placeId}", place))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"UpdatePlace(placeId={placeId}, user={JsonConvert.SerializeObject(place)}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task DeletePlace(Guid placeId)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                await client.Delete<BasicResponse>($"place/{placeId}");
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"DeletePlace(placeId={placeId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task LinkPlace(Guid placeId, Guid userId)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                await client.Post<BasicResponse>($"place/{placeId}/link/{userId}", new EmptyObject());
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"LinkPlace(placeId={placeId}, userId={userId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task UnlinkPlace(Guid placeId, Guid userId)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                await client.Delete<BasicResponse>($"place/{placeId}/link/{userId}");
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"UnlinkPlace(placeId={placeId}, userId={userId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+
+        public async Task<Thing> CreateThing(Guid placeId, NewThing thing)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return (await client.Post<Thing[]>($"place/{placeId}/thing", thing))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"CreateThing(thing={JsonConvert.SerializeObject(thing)}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<IEnumerable<Thing>> ReadThings(Guid placeId)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return await client.Get<Thing[]>($"place/{placeId}");
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"ReadThings(placeId={placeId}) failed", ex);
 
                 throw new WimdioApiClientException(ex.Message, ex);
             }
