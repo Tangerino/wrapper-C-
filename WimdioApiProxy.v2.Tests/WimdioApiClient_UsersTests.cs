@@ -25,7 +25,6 @@ namespace WimdioApiProxy.v2.Tests
             actual.Should().NotBeNull("Users list should not be NULL");
         }
 
-
         [TestMethod()]
         public void CreateUser_Positive()
         {
