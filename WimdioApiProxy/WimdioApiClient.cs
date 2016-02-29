@@ -1,4 +1,5 @@
 ﻿using log4net;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ using WimdioApiProxy.v2.DataTransferObjects.Accounts;
 using WimdioApiProxy.v2.DataTransferObjects.Places;
 using WimdioApiProxy.v2.DataTransferObjects.Things;
 using WimdioApiProxy.v2.DataTransferObjects.Users;
-using Newtonsoft.Json;
+using WimdioApiProxy.v2.DataTransferObjects.NormalizationFactors;
 
 namespace WimdioApiProxy.v2
 {
@@ -333,6 +334,146 @@ namespace WimdioApiProxy.v2
             }
         }
 
+        public async Task<IEnumerable<NormalizationFactor>> ReadNormalizationFactors(Guid placeId)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                var response = await client.Get<NormalizationFactor[]>($"place/{placeId}/nfs");
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"ReadNormalizationFactors(placeId={placeId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<NormalizationFactor> CreateNormalizationFactor(Guid placeId, NewNormalizationFactor normalizationFactor)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return (await client.Post<NormalizationFactor[]>($"place/{placeId}/nf", normalizationFactor))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"CreateNormalizationFactor(placeId={placeId}, normalizationFactor={JsonConvert.SerializeObject(normalizationFactor)}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<NormalizationFactor> ReadNormalizationFactor(Guid normalizationFactorId)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return (await client.Get<NormalizationFactor[]>($"nf/{normalizationFactorId}"))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"ReadNormalizationFactor(normalizationFactorId={normalizationFactorId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<NormalizationFactor> UpdateNormalizationFactor(Guid normalizationFactorId, NewNormalizationFactor normalizationFactor)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return (await client.Put<NormalizationFactor[]>($"nf/{normalizationFactorId}", normalizationFactor))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"UpdateNormalizationFactor(normalizationFactorId={normalizationFactorId}, normalizationFactor={JsonConvert.SerializeObject(normalizationFactor)}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task DeleteNormalizationFactor(Guid normalizationFactorId)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                await client.Delete<BasicResponse>($"nf/{normalizationFactorId}");
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"DeleteNormalizationFactor(normalizationFactorId={normalizationFactorId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<NormalizationFactorValue> CreateNormalizationFactorValue(Guid normalizationFactorId, NormalizationFactorValue normalizationFactorValue)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return (await client.Post<NormalizationFactorValue[]>($"nf/{normalizationFactorId}/value", normalizationFactorValue))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"CreateNormalizationFactorValue(normalizationFactorId={normalizationFactorId}, normalizationFactorValue={JsonConvert.SerializeObject(normalizationFactorValue)}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<NormalizationFactorValue> UpdateNormalizationFactorValue(Guid normalizationFactorId, NormalizationFactorValue normalizationFactorValue)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return (await client.Put<NormalizationFactorValue[]>($"nf/{normalizationFactorId}/value", normalizationFactorValue))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"UpdateNormalizationFactorValue(normalizationFactorId={normalizationFactorId}, normalizationFactorValue={JsonConvert.SerializeObject(normalizationFactorValue)}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task DeleteNormalizationFactorValue(Guid normalizationFactorId, DateTime date)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                await client.Delete<BasicResponse>($"nf/{normalizationFactorId}/value/{date.ToString("o")}");
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"DeleteNormalizationFactorValue(normalizationFactorId={normalizationFactorId}, date={date.ToString("o")}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<IEnumerable<NormalizationFactorValue>> ReadNormalizationFactorValues(Guid normalizationFactorId)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                var response = await client.Get<NormalizationFactorValue[]>($"nf/{normalizationFactorId}/values");
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"ReadNormalizationFactorValues(normalizationFactorId={normalizationFactorId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+
         public async Task<Thing> CreateThing(Guid placeId, NewThing thing)
         {
             try
@@ -363,5 +504,6 @@ namespace WimdioApiProxy.v2
                 throw new WimdioApiClientException(ex.Message, ex);
             }
         }
+
     }
 }

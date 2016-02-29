@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using WimdioApiProxy.v2.DataTransferObjects.Accounts;
+using WimdioApiProxy.v2.DataTransferObjects.NormalizationFactors;
 using WimdioApiProxy.v2.DataTransferObjects.Places;
 using WimdioApiProxy.v2.DataTransferObjects.Things;
 using WimdioApiProxy.v2.DataTransferObjects.Users;
@@ -32,6 +33,16 @@ namespace WimdioApiProxy.v2
         Task DeletePlace(Guid placeId);
         Task LinkPlace(Guid placeId, Guid userId);
         Task UnlinkPlace(Guid placeId, Guid userId);
+
+        Task<IEnumerable<NormalizationFactor>> ReadNormalizationFactors(Guid placeId);
+        Task<NormalizationFactor> CreateNormalizationFactor(Guid placeId, NewNormalizationFactor normalizationFactor);
+        Task<NormalizationFactor> ReadNormalizationFactor(Guid normalizationFactorId);
+        Task<NormalizationFactor> UpdateNormalizationFactor(Guid normalizationFactorId, NewNormalizationFactor normalizationFactor);
+        Task DeleteNormalizationFactor(Guid normalizationFactorId);
+        Task<NormalizationFactorValue> CreateNormalizationFactorValue(Guid normalizationFactorId, NormalizationFactorValue normalizationFactorValue);
+        Task<NormalizationFactorValue> UpdateNormalizationFactorValue(Guid normalizationFactorId, NormalizationFactorValue normalizationFactorValue);
+        Task DeleteNormalizationFactorValue(Guid normalizationFactorId, DateTime date);
+        Task<IEnumerable<NormalizationFactorValue>> ReadNormalizationFactorValues(Guid normalizationFactorId);
 
         Task<Thing> CreateThing(Guid placeId, NewThing thing);
         Task<IEnumerable<Thing>> ReadThings(Guid placeId);
