@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -8,18 +7,25 @@ using WimdioApiProxy.v2.DataTransferObjects.Users;
 
 namespace WimdioApiProxy.v2.Tests
 {
-    public partial class WimdioApiClientTests
+    [TestClass()]
+    public class UsersTests : BaseTests
     {
+        protected List<User> UsersCreated = new List<User>();
+
+        public new void Dispose()
+        {
+            UsersCreated.ForEach(async u => await Client.DeletePlace(u.Id));
+            base.Dispose();
+        }
+
         [TestMethod()]
         public void ReadUses_Positive()
         {
-            IWimdioApiClient client = null;
             IEnumerable<User> actual = null;
 
             Func<Task> asyncFunction = async () =>
             {
-                client = await GetAuthorizedClient();
-                actual = await client.ReadUsers();
+                actual = await Client.ReadUsers();
             };
             asyncFunction.ShouldNotThrow("Method should not throw");
             actual.Should().NotBeNull("Users list should not be NULL");
@@ -28,13 +34,10 @@ namespace WimdioApiProxy.v2.Tests
         [TestMethod()]
         public void CreateUser_Positive()
         {
-            IWimdioApiClient client = null;
             User actual = null;
-
             Func<Task> asyncFunction = async () =>
             {
-                client = await GetAuthorizedClient();
-                actual = await CreateUser(client);
+                actual = await CreateUser(Client, UsersCreated);
             };
 
             asyncFunction.ShouldNotThrow("Method should not throw");
@@ -44,15 +47,12 @@ namespace WimdioApiProxy.v2.Tests
         [TestMethod()]
         public void ReadUser_Positive()
         {
-            IWimdioApiClient client = null;
             User expected = null;
             User actual = null;
-
             Func<Task> asyncFunction = async () =>
             {
-                client = await GetAuthorizedClient();
-                expected = await CreateUser(client);
-                actual = await client.ReadUser(expected.Id);
+                expected = await CreateUser(Client, UsersCreated);
+                actual = await Client.ReadUser(expected.Id);
             };
             asyncFunction.ShouldNotThrow("Method should not throw");
             actual.Should().NotBeNull("User should not be NULL");
@@ -64,22 +64,19 @@ namespace WimdioApiProxy.v2.Tests
         [TestMethod()]
         public void UpdateUser_Positive()
         {
-            IWimdioApiClient client = null;
             UpdateUser expected = null;
             User actual = null;
 
             Func<Task> asyncFunction = async () =>
             {
-                client = await GetAuthorizedClient();
-                var user = await CreateUser(client);
-
+                var user = await CreateUser(Client, UsersCreated);
                 expected = new UpdateUser
                 {
                     FirstName = user.FirstName + "Updated",
                     LastName = user.LastName + "Updated",
                 };
 
-                actual = await client.UpdateUser(user.Id, expected);
+                actual = await Client.UpdateUser(user.Id, expected);
             };
             asyncFunction.ShouldNotThrow("Method should not throw");
             actual.Should().NotBeNull("User should not be NULL");
@@ -90,16 +87,13 @@ namespace WimdioApiProxy.v2.Tests
         [TestMethod()]
         public void ChangePermissions_Positive()
         {
-            IWimdioApiClient client = null;
             Permission expected = Permission.Create | Permission.Update | Permission.Read;
             User actual = null;
-
             Func<Task> asyncFunction = async () =>
             {
-                client = await GetAuthorizedClient();
-                var user = await CreateUser(client);
+                var user = await CreateUser(Client, UsersCreated);
 
-                actual = await client.ChangePermissions(user.Id, expected);
+                actual = await Client.ChangePermissions(user.Id, expected);
             };
             asyncFunction.ShouldNotThrow("Method should not throw");
             actual.Should().NotBeNull("User should not be NULL");
@@ -107,37 +101,14 @@ namespace WimdioApiProxy.v2.Tests
         }
 
         [TestMethod()]
-        public void Users_DeleteAll_Positive()
+        public void DeleteUser_Positive()
         {
-            IWimdioApiClient client = null;
-            IEnumerable<User> actualReadUsers = null;
-
             Func<Task> asyncFunction = async () =>
             {
-                client = await GetAuthorizedClient();
-
-                actualReadUsers = await client.ReadUsers();
-                actualReadUsers.Select(u => u.Id).ToList().ForEach(async id => await client.DeleteUser(id));
-
-                actualReadUsers = await client.ReadUsers();
+                var user = await CreateUser(Client, UsersCreated);
+                await Client.DeleteUser(user.Id);
             };
             asyncFunction.ShouldNotThrow("Method should not throw");
-            actualReadUsers.Should().NotBeNull("Users list should not be NULL");
-            actualReadUsers.Should().BeEmpty("Users list items were not expected");
-        }
-
-        private async Task<User> CreateUser(IWimdioApiClient client)
-        {
-            var user = new NewUser
-            {
-                Password = "secure",
-                FirstName = "FirstName",
-                LastName = "LastName",
-                Email = $"dummy+{Guid.NewGuid().ToString().Substring(0, 8)}@email.com",
-                Permissions = Permission.Read | Permission.Update
-            };
-
-            return await client.CreateUser(user);
         }
     }
 }

@@ -411,13 +411,31 @@ namespace WimdioApiProxy.v2
                 throw new WimdioApiClientException(ex.Message, ex);
             }
         }
-        public async Task<NormalizationFactorValue> CreateNormalizationFactorValue(Guid normalizationFactorId, NormalizationFactorValue normalizationFactorValue)
+
+        public async Task<IEnumerable<NormalizationFactorValue>> ReadNormalizationFactorValues(Guid normalizationFactorId)
         {
             try
             {
                 var client = new ApiRequestClient(_baseUrl, _apiKey);
 
-                return (await client.Post<NormalizationFactorValue[]>($"nf/{normalizationFactorId}/value", normalizationFactorValue))?.FirstOrDefault();
+                var response = await client.Get<NormalizationFactorValue[]>($"nf/{normalizationFactorId}/values");
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"ReadNormalizationFactorValues(normalizationFactorId={normalizationFactorId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task CreateNormalizationFactorValue(Guid normalizationFactorId, NormalizationFactorValue normalizationFactorValue)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                await client.Post<NormalizationFactorValue[]>($"nf/{normalizationFactorId}/value", normalizationFactorValue);
             }
             catch (Exception ex)
             {
@@ -426,13 +444,13 @@ namespace WimdioApiProxy.v2
                 throw new WimdioApiClientException(ex.Message, ex);
             }
         }
-        public async Task<NormalizationFactorValue> UpdateNormalizationFactorValue(Guid normalizationFactorId, NormalizationFactorValue normalizationFactorValue)
+        public async Task UpdateNormalizationFactorValue(Guid normalizationFactorId, NormalizationFactorValue normalizationFactorValue)
         {
             try
             {
                 var client = new ApiRequestClient(_baseUrl, _apiKey);
 
-                return (await client.Put<NormalizationFactorValue[]>($"nf/{normalizationFactorId}/value", normalizationFactorValue))?.FirstOrDefault();
+                await client.Put<BasicResponse>($"nf/{normalizationFactorId}/value", normalizationFactorValue);
             }
             catch (Exception ex)
             {
@@ -456,39 +474,7 @@ namespace WimdioApiProxy.v2
                 throw new WimdioApiClientException(ex.Message, ex);
             }
         }
-        public async Task<IEnumerable<NormalizationFactorValue>> ReadNormalizationFactorValues(Guid normalizationFactorId)
-        {
-            try
-            {
-                var client = new ApiRequestClient(_baseUrl, _apiKey);
 
-                var response = await client.Get<NormalizationFactorValue[]>($"nf/{normalizationFactorId}/values");
-
-                return response;
-            }
-            catch (Exception ex)
-            {
-                _log.Error($"ReadNormalizationFactorValues(normalizationFactorId={normalizationFactorId}) failed", ex);
-
-                throw new WimdioApiClientException(ex.Message, ex);
-            }
-        }
-
-        public async Task<Thing> CreateThing(Guid placeId, NewThing thing)
-        {
-            try
-            {
-                var client = new ApiRequestClient(_baseUrl, _apiKey);
-
-                return (await client.Post<Thing[]>($"place/{placeId}/thing", thing))?.FirstOrDefault();
-            }
-            catch (Exception ex)
-            {
-                _log.Error($"CreateThing(thing={JsonConvert.SerializeObject(thing)}) failed", ex);
-
-                throw new WimdioApiClientException(ex.Message, ex);
-            }
-        }
         public async Task<IEnumerable<Thing>> ReadThings(Guid placeId)
         {
             try
@@ -500,6 +486,21 @@ namespace WimdioApiProxy.v2
             catch (Exception ex)
             {
                 _log.Error($"ReadThings(placeId={placeId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<Thing> CreateThing(Guid placeId, NewThing thing)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return (await client.Post<Thing[]>($"place/{placeId}/thing", thing))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"CreateThing(thing={JsonConvert.SerializeObject(thing)}) failed", ex);
 
                 throw new WimdioApiClientException(ex.Message, ex);
             }
