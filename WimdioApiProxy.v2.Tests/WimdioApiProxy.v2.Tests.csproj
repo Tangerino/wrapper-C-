@@ -61,10 +61,13 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="BaseTests.cs" />
+    <Compile Include="NormalizationFactorValuesTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WimdioApiClient_AccountsTests.cs" />
-    <Compile Include="WimdioApiClient_PlacesTests.cs" />
-    <Compile Include="WimdioApiClient_UsersTests.cs" />
+    <Compile Include="AccountsTests.cs" />
+    <Compile Include="NormalizationFactorTests.cs" />
+    <Compile Include="PlacesTests.cs" />
+    <Compile Include="UsersTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\WimdioApiProxy\WimdioApiProxy.v2.csproj">

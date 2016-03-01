@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -8,18 +7,24 @@ using WimdioApiProxy.v2.DataTransferObjects.Places;
 
 namespace WimdioApiProxy.v2.Tests
 {
-    public partial class WimdioApiClientTests
+    [TestClass()]
+    public class PlacesTests : BaseTests
     {
+        protected List<Place> PlacesCreated = new List<Place>();
+
+        public new void Dispose()
+        {
+            PlacesCreated.ForEach(async p => await Client.DeletePlace(p.Id));
+            base.Dispose();
+        }
+
         [TestMethod()]
         public void ReadPlaces_Positive()
         {
-            IWimdioApiClient client = null;
             IEnumerable<Place> actual = null;
-
             Func<Task> asyncFunction = async () =>
             {
-                client = await GetAuthorizedClient();
-                actual = await client.ReadPlaces();
+                actual = await Client.ReadPlaces();
             };
             asyncFunction.ShouldNotThrow("Method should not throw");
             actual.Should().NotBeNull("Result list should not be NULL");
@@ -28,13 +33,10 @@ namespace WimdioApiProxy.v2.Tests
         [TestMethod()]
         public void CreatePlace_Positive()
         {
-            IWimdioApiClient client = null;
             Place actual = null;
-
             Func<Task> asyncFunction = async () =>
             {
-                client = await GetAuthorizedClient();
-                actual = await CreatePlace(client);
+                actual = await CreatePlace(Client, PlacesCreated);
             };
 
             asyncFunction.ShouldNotThrow("Method should not throw");
@@ -44,15 +46,12 @@ namespace WimdioApiProxy.v2.Tests
         [TestMethod()]
         public void ReadPlace_Positive()
         {
-            IWimdioApiClient client = null;
             Place expected = null;
             Place actual = null;
-
             Func<Task> asyncFunction = async () =>
             {
-                client = await GetAuthorizedClient();
-                expected = await CreatePlace(client);
-                actual = await client.ReadPlace(expected.Id);
+                expected = await CreatePlace(Client, PlacesCreated);
+                actual = await Client.ReadPlace(expected.Id);
             };
             asyncFunction.ShouldNotThrow("Method should not throw");
             actual.Should().NotBeNull("Actual value should not be NULL");
@@ -64,22 +63,17 @@ namespace WimdioApiProxy.v2.Tests
         [TestMethod()]
         public void UpdatePlace_Positive()
         {
-            IWimdioApiClient client = null;
             NewPlace expected = null;
             Place actual = null;
-
             Func<Task> asyncFunction = async () =>
             {
-                client = await GetAuthorizedClient();
-                var place = await CreatePlace(client);
-
+                var place = await CreatePlace(Client, PlacesCreated);
                 expected = new NewPlace
                 {
                     Name = place.Name + "Updated",
                     Description = place.Description + "Updated",
                 };
-
-                actual = await client.UpdatePlace(place.Id, expected);
+                actual = await Client.UpdatePlace(place.Id, expected);
             };
             asyncFunction.ShouldNotThrow("Method should not throw");
             actual.Should().NotBeNull("Actual value should not be NULL");
@@ -90,19 +84,16 @@ namespace WimdioApiProxy.v2.Tests
         [TestMethod()]
         public void LinkUnlinkPlace_Positive()
         {
-            IWimdioApiClient client = null;
             Place actual = null;
-
             Func<Task> asyncFunction = async () =>
             {
-                client = await GetAuthorizedClient();
-                actual = await CreatePlace(client);
+                actual = await CreatePlace(Client, PlacesCreated);
+                var user = await CreateUser(Client, null);
 
-                var user = await CreateUser(client);
-                await client.LinkPlace(actual.Id, user.Id);
+                await Client.LinkPlace(actual.Id, user.Id);
+                await Client.UnlinkPlace(actual.Id, user.Id);
 
-                await client.UnlinkPlace(actual.Id, user.Id);
-                await client.DeleteUser(user.Id);
+                await Client.DeleteUser(user.Id);
             };
             asyncFunction.ShouldNotThrow("Method should not throw");
             actual.Should().NotBeNull("Actual value should not be NULL");
@@ -110,36 +101,15 @@ namespace WimdioApiProxy.v2.Tests
 
 
         [TestMethod()]
-        public void Places_DeleteAll_Positive()
+        public void DeletePlace_Positive()
         {
-            IWimdioApiClient client = null;
-            IEnumerable<Place> actualReadPlaces = null;
-
+            Place actual = null;
             Func<Task> asyncFunction = async () =>
             {
-                client = await GetAuthorizedClient();
-
-                actualReadPlaces = await client.ReadPlaces();
-                actualReadPlaces.Select(p => p.Id).ToList().ForEach(async id => await client.DeletePlace(id));
-
-                actualReadPlaces = await client.ReadPlaces();
+                actual = await CreatePlace(Client, PlacesCreated);
+                await Client.DeletePlace(actual.Id);
             };
             asyncFunction.ShouldNotThrow("Method should not throw");
-            actualReadPlaces.Should().NotBeNull("Result list should not be NULL");
-            actualReadPlaces.Should().BeEmpty("Result list should be empty");
-        }
-
-        private async Task<Place> CreatePlace(IWimdioApiClient client)
-        {
-            var random = Guid.NewGuid().ToString().Split('-').First();
-
-            var place = new NewPlace
-            {
-                Name = $"Name {random}",
-                Description = $"Description {random}"
-            };
-
-            return await client.CreatePlace(place);
         }
     }
 }
