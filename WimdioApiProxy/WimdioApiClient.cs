@@ -505,6 +505,50 @@ namespace WimdioApiProxy.v2
                 throw new WimdioApiClientException(ex.Message, ex);
             }
         }
+        public async Task<Thing> ReadThing(Guid thingId)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
 
+                return (await client.Get<Thing[]>($"thing/{thingId}"))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"ReadThing(thingId={thingId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<Thing> UpdateThing(Guid thingId, NewThing thing)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return (await client.Put<Thing[]>($"thing/{thingId}", thing))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"UpdateThing(thingId={thingId}, thing={JsonConvert.SerializeObject(thing)}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task DeleteThing(Guid thingId)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                await client.Delete<BasicResponse>($"thing/{thingId}");
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"DeleteThing(thingId={thingId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
     }
 }

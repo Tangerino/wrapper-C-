@@ -40,12 +40,15 @@ namespace WimdioApiProxy.v2
         Task<NormalizationFactor> UpdateNormalizationFactor(Guid normalizationFactorId, NewNormalizationFactor normalizationFactor);
         Task DeleteNormalizationFactor(Guid normalizationFactorId);
 
+        Task<IEnumerable<NormalizationFactorValue>> ReadNormalizationFactorValues(Guid normalizationFactorId);
         Task CreateNormalizationFactorValue(Guid normalizationFactorId, NormalizationFactorValue normalizationFactorValue);
         Task UpdateNormalizationFactorValue(Guid normalizationFactorId, NormalizationFactorValue normalizationFactorValue);
         Task DeleteNormalizationFactorValue(Guid normalizationFactorId, DateTime date);
-        Task<IEnumerable<NormalizationFactorValue>> ReadNormalizationFactorValues(Guid normalizationFactorId);
 
-        Task<Thing> CreateThing(Guid placeId, NewThing thing);
         Task<IEnumerable<Thing>> ReadThings(Guid placeId);
+        Task<Thing> CreateThing(Guid placeId, NewThing thing);
+        Task<Thing> ReadThing(Guid thingId);
+        Task<Thing> UpdateThing(Guid thingId, NewThing thing);
+        Task DeleteThing(Guid thingId);
     }
 }
