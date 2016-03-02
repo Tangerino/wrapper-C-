@@ -69,6 +69,7 @@
     <Compile Include="AccountsTests.cs" />
     <Compile Include="NormalizationFactorTests.cs" />
     <Compile Include="PlacesTests.cs" />
+    <Compile Include="EtlsTests.cs" />
     <Compile Include="ThingsTests.cs" />
     <Compile Include="UsersTests.cs" />
   </ItemGroup>
