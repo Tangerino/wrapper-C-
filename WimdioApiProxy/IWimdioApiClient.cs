@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using WimdioApiProxy.v2.DataTransferObjects.Accounts;
+using WimdioApiProxy.v2.DataTransferObjects.Formulas;
 using WimdioApiProxy.v2.DataTransferObjects.NormalizationFactors;
 using WimdioApiProxy.v2.DataTransferObjects.Places;
 using WimdioApiProxy.v2.DataTransferObjects.Things;
@@ -50,5 +51,12 @@ namespace WimdioApiProxy.v2
         Task<Thing> ReadThing(Guid thingId);
         Task<Thing> UpdateThing(Guid thingId, NewThing thing);
         Task DeleteThing(Guid thingId);
+
+        Task<IEnumerable<Formula>> ReadFormulas();
+        Task<Formula> CreateFormula(NewFormula formula);
+        Task<Formula> ReadFormula(Guid formulaId);
+        Task<string> ReadFormulaCode(Guid formulaId);
+        Task<Formula> UpdateFormula(Guid formulaId, NewFormula formula);
+        Task DeleteFormula(Guid formulaId);
     }
 }

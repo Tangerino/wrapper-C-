@@ -54,6 +54,9 @@
     <Compile Include="DataTransferObjects\ErrorResponse.cs" />
     <Compile Include="DataTransferObjects\BasicResponse.cs" />
     <Compile Include="DataTransferObjects\Accounts\LoginResponse.cs" />
+    <Compile Include="DataTransferObjects\Formulas\FormulaCode.cs" />
+    <Compile Include="DataTransferObjects\Formulas\NewFormula.cs" />
+    <Compile Include="DataTransferObjects\Formulas\Formula.cs" />
     <Compile Include="DataTransferObjects\NormalizationFactors\NewNormalizationFactor.cs" />
     <Compile Include="DataTransferObjects\NormalizationFactors\NormalizationFactorValue.cs" />
     <Compile Include="DataTransferObjects\Things\NewThing.cs" />

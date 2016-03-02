@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WimdioApiProxy.v2.DataTransferObjects.Accounts;
+using WimdioApiProxy.v2.DataTransferObjects.Formulas;
 using WimdioApiProxy.v2.DataTransferObjects.NormalizationFactors;
 using WimdioApiProxy.v2.DataTransferObjects.Places;
 using WimdioApiProxy.v2.DataTransferObjects.Things;
@@ -118,6 +119,24 @@ namespace WimdioApiProxy.v2.Tests
 
             var created = await client.CreateThing(place.Id, thing);
             thingsCreated?.Add(created);
+
+            return created;
+        }
+
+        internal static async Task<Formula> CreateFormula(IWimdioApiClient client, List<Formula> formulasCreated)
+        {
+            var random = Guid.NewGuid().ToString().Split('-').First();
+
+            var formula = new NewFormula
+            {
+                Name = $"Name {random}",
+                Code = $"ww = w * w\r\nvv = v * v\r\nr = math.sqrt(ww + vv)\r\nvm = w / r",
+                Library = 0
+            };
+
+            var created = await client.CreateFormula(formula);
+            created.Code = formula.Code;
+            formulasCreated?.Add(created);
 
             return created;
         }
