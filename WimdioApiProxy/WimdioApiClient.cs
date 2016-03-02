@@ -11,6 +11,7 @@ using WimdioApiProxy.v2.DataTransferObjects.Places;
 using WimdioApiProxy.v2.DataTransferObjects.Things;
 using WimdioApiProxy.v2.DataTransferObjects.Users;
 using WimdioApiProxy.v2.DataTransferObjects.NormalizationFactors;
+using WimdioApiProxy.v2.DataTransferObjects.Formulas;
 
 namespace WimdioApiProxy.v2
 {
@@ -546,6 +547,99 @@ namespace WimdioApiProxy.v2
             catch (Exception ex)
             {
                 _log.Error($"DeleteThing(thingId={thingId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+
+        public async Task<IEnumerable<Formula>> ReadFormulas()
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                var response = await client.Get<Formula[]>("formulas");
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"ReadFormulas() failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<Formula> CreateFormula(NewFormula formula)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return (await client.Post<Formula[]>("formula", formula))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"CreateFormula(formula={JsonConvert.SerializeObject(formula)}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<Formula> ReadFormula(Guid formulaId)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return (await client.Get<Formula[]>($"formula/{formulaId}"))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"ReadFormula(formulaId={formulaId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<string> ReadFormulaCode(Guid formulaId)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return (await client.Get<FormulaCode[]>($"formula/{formulaId}/code"))?.FirstOrDefault()?.Code;
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"ReadFormulaCode(formulaId={formulaId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<Formula> UpdateFormula(Guid formulaId, NewFormula formula)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return (await client.Put<Formula[]>($"formula/{formulaId}", formula))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"UpdateFormula(formulaId={formulaId}, user={JsonConvert.SerializeObject(formula)}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task DeleteFormula(Guid formulaId)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                await client.Delete<BasicResponse>($"formula/{formulaId}");
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"DeleteFormula(formulaId={formulaId}) failed", ex);
 
                 throw new WimdioApiClientException(ex.Message, ex);
             }
