@@ -54,6 +54,8 @@
     <Compile Include="DataTransferObjects\ErrorResponse.cs" />
     <Compile Include="DataTransferObjects\BasicResponse.cs" />
     <Compile Include="DataTransferObjects\Accounts\LoginResponse.cs" />
+    <Compile Include="DataTransferObjects\Etls\Etl.cs" />
+    <Compile Include="DataTransferObjects\Etls\NewEtl.cs" />
     <Compile Include="DataTransferObjects\Formulas\FormulaCode.cs" />
     <Compile Include="DataTransferObjects\Formulas\NewFormula.cs" />
     <Compile Include="DataTransferObjects\Formulas\Formula.cs" />
@@ -88,7 +90,6 @@
   <ItemGroup>
     <Folder Include="DataTransferObjects\Devices\" />
     <Folder Include="DataTransferObjects\DropBox\" />
-    <Folder Include="DataTransferObjects\Etl\" />
     <Folder Include="DataTransferObjects\RemoteSensors\" />
     <Folder Include="DataTransferObjects\Sensors\" />
     <Folder Include="DataTransferObjects\ShadowDevice\" />

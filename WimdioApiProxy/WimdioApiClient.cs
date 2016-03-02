@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using WimdioApiProxy.v2.Rest;
 using WimdioApiProxy.v2.DataTransferObjects;
 using WimdioApiProxy.v2.DataTransferObjects.Accounts;
+using WimdioApiProxy.v2.DataTransferObjects.Etls;
 using WimdioApiProxy.v2.DataTransferObjects.Places;
 using WimdioApiProxy.v2.DataTransferObjects.Things;
 using WimdioApiProxy.v2.DataTransferObjects.Users;
@@ -640,6 +641,84 @@ namespace WimdioApiProxy.v2
             catch (Exception ex)
             {
                 _log.Error($"DeleteFormula(formulaId={formulaId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+
+        public async Task<IEnumerable<Etl>> ReadEtls()
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                var response = await client.Get<Etl[]>("etls");
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"ReadEtls() failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<Etl> CreateEtl(NewEtl etl)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return (await client.Post<Etl[]>("etl", etl))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"CreateEtl(etl={JsonConvert.SerializeObject(etl)}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<Etl> ReadEtl(Guid etlId)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return (await client.Get<Etl[]>($"etl/{etlId}"))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"ReadEtl(etlId={etlId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<Etl> UpdateEtl(Guid etlId, NewEtl etl)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return (await client.Put<Etl[]>($"etl/{etlId}", etl))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"UpdateEtl(etlId={etlId}, user={JsonConvert.SerializeObject(etl)}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task DeleteEtl(Guid etlId)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                await client.Delete<BasicResponse>($"etl/{etlId}");
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"DeleteEtl(etlId={etlId}) failed", ex);
 
                 throw new WimdioApiClientException(ex.Message, ex);
             }

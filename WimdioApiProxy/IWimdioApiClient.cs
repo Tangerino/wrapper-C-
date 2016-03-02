@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using WimdioApiProxy.v2.DataTransferObjects.Accounts;
+using WimdioApiProxy.v2.DataTransferObjects.Etls;
 using WimdioApiProxy.v2.DataTransferObjects.Formulas;
 using WimdioApiProxy.v2.DataTransferObjects.NormalizationFactors;
 using WimdioApiProxy.v2.DataTransferObjects.Places;
@@ -58,5 +59,11 @@ namespace WimdioApiProxy.v2
         Task<string> ReadFormulaCode(Guid formulaId);
         Task<Formula> UpdateFormula(Guid formulaId, NewFormula formula);
         Task DeleteFormula(Guid formulaId);
+
+        Task<IEnumerable<Etl>> ReadEtls();
+        Task<Etl> CreateEtl(NewEtl etl);
+        Task<Etl> ReadEtl(Guid etlId);
+        Task<Etl> UpdateEtl(Guid etlId, NewEtl etl);
+        Task DeleteEtl(Guid etlId);
     }
 }

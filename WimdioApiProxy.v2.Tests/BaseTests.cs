@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WimdioApiProxy.v2.DataTransferObjects.Accounts;
+using WimdioApiProxy.v2.DataTransferObjects.Etls;
 using WimdioApiProxy.v2.DataTransferObjects.Formulas;
 using WimdioApiProxy.v2.DataTransferObjects.NormalizationFactors;
 using WimdioApiProxy.v2.DataTransferObjects.Places;
@@ -137,6 +138,28 @@ namespace WimdioApiProxy.v2.Tests
             var created = await client.CreateFormula(formula);
             created.Code = formula.Code;
             formulasCreated?.Add(created);
+
+            return created;
+        }
+
+        internal static async Task<Etl> CreateEtl(IWimdioApiClient client, Place place, List<Etl> etlsCreated)
+        {
+            var random = Guid.NewGuid().ToString().Split('-').First();
+
+            var etl = new NewEtl
+            {
+                Name = $"Name {random}",
+                Endpoint = new Uri("http://www.google.com"),
+                Username = $"Username{random}",
+                Password = $"{random}",
+                Type = EtlType.InfluxDB,
+                PlaceId = place.Id,
+                DatabaseName = $"Database{random}",
+                TableName = $"Table{random}",
+            };
+
+            var created = await client.CreateEtl(etl);
+            etlsCreated?.Add(created);
 
             return created;
         }
