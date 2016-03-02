@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using WimdioApiProxy.v2.DataTransferObjects.Users;
 
 namespace WimdioApiProxy.v2.DataTransferObjects.Accounts
 {
@@ -8,6 +9,6 @@ namespace WimdioApiProxy.v2.DataTransferObjects.Accounts
         public string ApiKey { get; set; }
 
         [JsonProperty("permissions")]
-        public Permissions Permissions { get; set; }
+        public Permission Permissions { get; set; }
     }
 }
