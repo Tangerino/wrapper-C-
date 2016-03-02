@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using WimdioApiProxy.v2.DataTransferObjects.Accounts;
 using WimdioApiProxy.v2.DataTransferObjects.NormalizationFactors;
 using WimdioApiProxy.v2.DataTransferObjects.Places;
+using WimdioApiProxy.v2.DataTransferObjects.Things;
 using WimdioApiProxy.v2.DataTransferObjects.Users;
 
 namespace WimdioApiProxy.v2.Tests
@@ -47,10 +48,10 @@ namespace WimdioApiProxy.v2.Tests
                 Permissions = Permission.Read | Permission.Update
             };
 
-            var userCreated = await client.CreateUser(user);
-            usersCreated?.Add(userCreated);
+            var created = await client.CreateUser(user);
+            usersCreated?.Add(created);
 
-            return userCreated;
+            return created;
         }
 
         internal static async Task<Place> CreatePlace(IWimdioApiClient client, List<Place> placesCreated)
@@ -63,10 +64,10 @@ namespace WimdioApiProxy.v2.Tests
                 Description = $"Description {random}"
             };
 
-            var placeCreated = await client.CreatePlace(place);
-            placesCreated?.Add(placeCreated);
+            var created = await client.CreatePlace(place);
+            placesCreated?.Add(created);
 
-            return placeCreated;
+            return created;
         }
 
         internal static async Task<NormalizationFactor> CreateNormalizationFactor(IWimdioApiClient client, Place place, List<NormalizationFactor> normalizationFactorsCreated)
@@ -82,10 +83,10 @@ namespace WimdioApiProxy.v2.Tests
                 Unit = $"Unit {random}"
             };
 
-            var normalizationFactorCreated = await client.CreateNormalizationFactor(place.Id, normalizationFactor);
-            normalizationFactorsCreated?.Add(normalizationFactorCreated);
+            var created = await client.CreateNormalizationFactor(place.Id, normalizationFactor);
+            normalizationFactorsCreated?.Add(created);
 
-            return normalizationFactorCreated;
+            return created;
         }
 
         internal static async Task<NormalizationFactorValue> CreateNormalizationFactorValue(IWimdioApiClient client, NormalizationFactor nf, Dictionary<Guid, NormalizationFactorValue> normalizationFactorValuesCreated)
@@ -103,6 +104,22 @@ namespace WimdioApiProxy.v2.Tests
             normalizationFactorValuesCreated?.Add(nf.Id, normalizationFactorValue);
 
             return normalizationFactorValue;
+        }
+
+        internal static async Task<Thing> CreateThing(IWimdioApiClient client, Place place, List<Thing> thingsCreated)
+        {
+            var random = Guid.NewGuid().ToString().Split('-').First();
+
+            var thing = new NewThing
+            {
+                Name = "Name " + random,
+                Description = "Description " + random
+            };
+
+            var created = await client.CreateThing(place.Id, thing);
+            thingsCreated?.Add(created);
+
+            return created;
         }
     }
 }
