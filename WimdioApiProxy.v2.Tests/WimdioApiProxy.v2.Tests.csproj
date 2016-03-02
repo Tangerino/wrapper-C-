@@ -63,6 +63,7 @@
   <ItemGroup>
     <Compile Include="BaseTests.cs" />
     <Compile Include="NormalizationFactorValuesTests.cs" />
+    <Compile Include="DevicesTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AccountsTests.cs" />
     <Compile Include="NormalizationFactorTests.cs" />
