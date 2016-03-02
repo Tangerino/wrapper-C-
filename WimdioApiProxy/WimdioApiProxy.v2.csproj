@@ -50,6 +50,8 @@
   <ItemGroup>
     <Compile Include="DataTransferObjects\Accounts\Account.cs" />
     <Compile Include="DataTransferObjects\Accounts\Credentials.cs" />
+    <Compile Include="DataTransferObjects\Devices\NewDevice.cs" />
+    <Compile Include="DataTransferObjects\Devices\Device.cs" />
     <Compile Include="DataTransferObjects\EmptyObject.cs" />
     <Compile Include="DataTransferObjects\ErrorResponse.cs" />
     <Compile Include="DataTransferObjects\BasicResponse.cs" />
@@ -86,7 +88,6 @@
     <Compile Include="WimdioApiClientException.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="DataTransferObjects\Devices\" />
     <Folder Include="DataTransferObjects\DropBox\" />
     <Folder Include="DataTransferObjects\Etl\" />
     <Folder Include="DataTransferObjects\RemoteSensors\" />

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WimdioApiProxy.v2.DataTransferObjects.Accounts;
+using WimdioApiProxy.v2.DataTransferObjects.Devices;
 using WimdioApiProxy.v2.DataTransferObjects.Formulas;
 using WimdioApiProxy.v2.DataTransferObjects.NormalizationFactors;
 using WimdioApiProxy.v2.DataTransferObjects.Places;
@@ -119,6 +120,22 @@ namespace WimdioApiProxy.v2.Tests
 
             var created = await client.CreateThing(place.Id, thing);
             thingsCreated?.Add(created);
+
+            return created;
+        }
+
+        internal static async Task<Device> CreateDevice(IWimdioApiClient client, List<Device> devicesCreated)
+        {
+            var random = Guid.NewGuid().ToString().Split('-').First();
+
+            var device = new NewDevice
+            {
+                Name = $"Name {random}",
+                Description = $"Description {random}"
+            };
+
+            var created = await client.CreateDevice(device);
+            devicesCreated?.Add(created);
 
             return created;
         }

@@ -11,6 +11,7 @@ using WimdioApiProxy.v2.DataTransferObjects.Places;
 using WimdioApiProxy.v2.DataTransferObjects.Things;
 using WimdioApiProxy.v2.DataTransferObjects.Users;
 using WimdioApiProxy.v2.DataTransferObjects.NormalizationFactors;
+using WimdioApiProxy.v2.DataTransferObjects.Devices;
 using WimdioApiProxy.v2.DataTransferObjects.Formulas;
 
 namespace WimdioApiProxy.v2
@@ -547,6 +548,82 @@ namespace WimdioApiProxy.v2
             catch (Exception ex)
             {
                 _log.Error($"DeleteThing(thingId={thingId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+
+        public async Task<IEnumerable<Device>> ReadDevices()
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return await client.Get<Device[]>($"devices");
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"ReadDevices() failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<Device> CreateDevice(NewDevice device)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return (await client.Post<Device[]>($"device", device))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"CreateDevice(device={JsonConvert.SerializeObject(device)}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<Device> ReadDevice(Guid deviceId)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return (await client.Get<Device[]>($"device/{deviceId}"))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"ReadDevice(deviceId={deviceId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<Device> UpdateDevice(Guid deviceId, NewDevice device)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return (await client.Put<Device[]>($"device/{deviceId}", device))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"UpdateDevice(deviceId={deviceId}, device={JsonConvert.SerializeObject(device)}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task DeleteDevice(Guid deviceId)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                await client.Delete<BasicResponse>($"device/{deviceId}");
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"DeleteDevice(deviceId={deviceId}) failed", ex);
 
                 throw new WimdioApiClientException(ex.Message, ex);
             }
