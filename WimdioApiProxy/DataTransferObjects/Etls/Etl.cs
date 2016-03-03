@@ -1,5 +1,6 @@
 ﻿using System;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace WimdioApiProxy.v2.DataTransferObjects.Etls
 {
@@ -7,5 +8,9 @@ namespace WimdioApiProxy.v2.DataTransferObjects.Etls
     {
         [JsonProperty("id")]
         public Guid Id { get; set; }
+
+        [JsonProperty("lastrun")]
+        [JsonConverter(typeof(IsoDateTimeConverter))]
+        public DateTime LastRun { get; set; }
     }
 }

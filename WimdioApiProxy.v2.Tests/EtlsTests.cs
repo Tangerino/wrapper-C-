@@ -16,8 +16,8 @@ namespace WimdioApiProxy.v2.Tests
 
         public new void Dispose()
         {
-            PlacesCreated.ForEach(async p => await Client.DeletePlace(p.Id));
             EtlsCreated.ForEach(async t => await Client.DeleteEtl(t.Id));
+            PlacesCreated.ForEach(async p => await Client.DeletePlace(p.Id));
             base.Dispose();
         }
 
