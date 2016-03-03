@@ -98,6 +98,7 @@
     <Folder Include="DataTransferObjects\VirtualSensor\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include=".gitignore" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

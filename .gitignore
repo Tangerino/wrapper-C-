@@ -1,0 +1,7 @@
+.vs/
+packages/
+TestResults/
+WimdioApiProxy/bin/
+WimdioApiProxy/obj/
+WimdioApiProxy.v2.Tests/bin/
+WimdioApiProxy.v2.Tests/obj/

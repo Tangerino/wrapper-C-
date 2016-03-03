@@ -1,5 +1,6 @@
 ﻿using System;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace WimdioApiProxy.v2.DataTransferObjects.Etls
 {
@@ -20,7 +21,7 @@ namespace WimdioApiProxy.v2.DataTransferObjects.Etls
         [JsonProperty("type")]
         public EtlType Type { get; set; }
 
-        [JsonProperty("place_uuid")]
+        [JsonProperty("placeid")]
         public Guid PlaceId { get; set; }
 
         [JsonProperty("database")]
