@@ -9,5 +9,8 @@ namespace WimdioApiProxy.v2.DataTransferObjects.Devices
 
         [JsonProperty("description")]
         public string Description { get; set; }
+
+        [JsonProperty("mac")]
+        public string Mac { get; set; }
     }
 }
