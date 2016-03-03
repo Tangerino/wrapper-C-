@@ -130,7 +130,8 @@ namespace WimdioApiProxy.v2.Tests
             var device = new NewDevice
             {
                 Name = $"Name {random}",
-                Description = $"Description {random}"
+                Description = $"Description {random}",
+                Mac = random
             };
 
             var created = await client.CreateDevice(device);
