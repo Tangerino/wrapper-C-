@@ -62,6 +62,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="BaseTests.cs" />
+    <Compile Include="DropboxTests.cs" />
     <Compile Include="NormalizationFactorValuesTests.cs" />
     <Compile Include="DevicesTests.cs" />
     <Compile Include="FormulasTests.cs" />

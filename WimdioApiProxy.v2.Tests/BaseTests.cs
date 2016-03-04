@@ -10,6 +10,7 @@ using WimdioApiProxy.v2.DataTransferObjects.NormalizationFactors;
 using WimdioApiProxy.v2.DataTransferObjects.Places;
 using WimdioApiProxy.v2.DataTransferObjects.Things;
 using WimdioApiProxy.v2.DataTransferObjects.Users;
+using WimdioApiProxy.v2.DataTransferObjects.DropBox;
 
 namespace WimdioApiProxy.v2.Tests
 {
@@ -156,6 +157,21 @@ namespace WimdioApiProxy.v2.Tests
             var created = await client.CreateFormula(formula);
             created.Code = formula.Code;
             formulasCreated?.Add(created);
+
+            return created;
+        }
+
+        internal static async Task<FileInfo> CreateFile(IWimdioApiClient client, Device device, IDictionary<Guid, FileInfo> FilesCreated)
+        {
+            var file = new NewFile
+            {
+                Url = new Uri("http://veryshorthistory.com/wp-content/uploads/2015/04/knights-templar.jpg"),
+                Action = FileAction.POST,
+                Type = "FIRMWARE_UPGRADE"
+            };
+
+            var created = await client.SendFileToDevice(device.Id, file);
+            FilesCreated?.Add(device.Id, created);
 
             return created;
         }
