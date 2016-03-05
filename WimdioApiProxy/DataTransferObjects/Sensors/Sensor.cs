@@ -1,11 +1,10 @@
-﻿using System;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace WimdioApiProxy.v2.DataTransferObjects.Sensors
 {
-    public class Sensor : NewSensor
+    public class Sensor : SensorUpdate
     {
-        [JsonProperty("id")]
-        public Guid Id { get; set; }
+        [JsonProperty("remoteid")]
+        public string RemoteId { get; set; }
     }
 }
