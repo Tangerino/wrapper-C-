@@ -8,12 +8,12 @@ using WimdioApiProxy.v2.Rest;
 using WimdioApiProxy.v2.DataTransferObjects;
 using WimdioApiProxy.v2.DataTransferObjects.Accounts;
 using WimdioApiProxy.v2.DataTransferObjects.Etls;
+using WimdioApiProxy.v2.DataTransferObjects.Devices;
+using WimdioApiProxy.v2.DataTransferObjects.Formulas;
+using WimdioApiProxy.v2.DataTransferObjects.NormalizationFactors;
 using WimdioApiProxy.v2.DataTransferObjects.Places;
 using WimdioApiProxy.v2.DataTransferObjects.Things;
 using WimdioApiProxy.v2.DataTransferObjects.Users;
-using WimdioApiProxy.v2.DataTransferObjects.NormalizationFactors;
-using WimdioApiProxy.v2.DataTransferObjects.Devices;
-using WimdioApiProxy.v2.DataTransferObjects.Formulas;
 using WimdioApiProxy.v2.DataTransferObjects.DropBox;
 using WimdioApiProxy.v2.DataTransferObjects.Sensors;
 
@@ -649,15 +649,19 @@ namespace WimdioApiProxy.v2
         }
         public async Task<Sensor> UpdateSensor(Guid deviceId, SensorUpdate sensor)
         {
+            throw new NotImplementedException();
         }
         public async Task DeleteSensor(Guid deviceId, string remoteId)
         {
+            throw new NotImplementedException();
         }
         public async Task SensorAddData(Guid deviceId, string remoteId, IEnumerable<Serie> series)
         {
+            throw new NotImplementedException();
         }
         public async Task SensorsAddData(Guid deviceId, string remoteId, IEnumerable<Serie> series)
         {
+            throw new NotImplementedException();
         }
 
         public async Task<IEnumerable<Formula>> ReadFormulas()
