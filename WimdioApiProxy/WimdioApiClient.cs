@@ -730,7 +730,7 @@ namespace WimdioApiProxy.v2
             {
                 var client = new ApiRequestClient(_baseUrl, _apiKey);
 
-                if (file.Type.Equals("FIRMWARE_UPGRADE"))
+                if (file.Type == FileType.FIRMWARE_UPGRADE)
                 {
                     await client.Post<BasicResponse>($"dropbox/{deviceId}/upload", file);
                     return null;

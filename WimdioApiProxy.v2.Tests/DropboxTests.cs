@@ -25,16 +25,7 @@ namespace WimdioApiProxy.v2.Tests
         [TestMethod()]
         public void SendFileToDevice_Positive()
         {
-            FileInfo actual = null;
-            Func<Task> asyncFunction = async () =>
-            {
-                var device = await CreateDevice(Client, DevicesCreated);
-                actual = await CreateFile(Client, device, FilesCreated);
-            };
-            asyncFunction.ShouldNotThrow("Method should not throw");
-            actual.Should().NotBeNull("Result list should not be NULL");
-            actual.Id.Should().NotBe(Guid.Empty, "Id should not be empty");
-            actual.Created.Should().BeBefore(DateTime.Now, "Created date time should be in the past");
+            throw new NotImplementedException("Can not implement method while read files returns an empty array");
         }
 
         [TestMethod()]
@@ -60,13 +51,25 @@ namespace WimdioApiProxy.v2.Tests
                 {
                     Url = new Uri("http://veryshorthistory.com/wp-content/uploads/2015/04/knights-templar.jpg"),
                     Action = FileAction.POST,
-                    Type = "FIRMWARE_UPGRADE"
+                    Type = FileType.FIRMWARE_UPGRADE
                 };
                 var device = await CreateDevice(Client, DevicesCreated);
                 await Client.SendFileToDevice(device.Id, file);
                 actual = await Client.DeviceReadFileInfo(device.DevKey);
             };
             asyncFunction.ShouldNotThrow("Method should not throw");
+        }
+
+        [TestMethod()]
+        public void DeviceAcknowledgeFile_Positive()
+        {
+            throw new NotImplementedException("Can not implement method while read files returns an empty array");
+        }
+
+        [TestMethod()]
+        public void DeleteFile_Positive()
+        {
+            throw new NotImplementedException("Can not implement method while read files returns an empty array");
         }
     }
 }

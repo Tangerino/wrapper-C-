@@ -14,11 +14,24 @@ namespace WimdioApiProxy.v2.DataTransferObjects.DropBox
         public FileAction Action { get; set; }
 
         [JsonProperty(PropertyName = "type")]
-        public string Type { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
+        public FileType Type { get; set; }
     }
 
     public enum FileAction
     {
-        POST
+        POST,
+        PUT,
+        GET,
+        DELETE
+    }
+
+    public enum FileType
+    {
+        GENERIC,
+        FIRMWARE_UPGRADE,
+        CONFIG_FILE,
+        SYSTEM_FILE,
+        DATABASE
     }
 }

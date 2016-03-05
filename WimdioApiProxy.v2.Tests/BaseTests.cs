@@ -167,11 +167,13 @@ namespace WimdioApiProxy.v2.Tests
             {
                 Url = new Uri("http://veryshorthistory.com/wp-content/uploads/2015/04/knights-templar.jpg"),
                 Action = FileAction.POST,
-                Type = "FIRMWARE_UPGRADE"
+                Type = FileType.FIRMWARE_UPGRADE
             };
 
             var created = await client.SendFileToDevice(device.Id, file);
-            FilesCreated?.Add(device.Id, created);
+
+            if (created != null)
+                FilesCreated?.Add(device.Id, created);
 
             return created;
         }
