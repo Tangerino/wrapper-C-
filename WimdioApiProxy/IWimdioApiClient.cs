@@ -10,6 +10,7 @@ using WimdioApiProxy.v2.DataTransferObjects.Places;
 using WimdioApiProxy.v2.DataTransferObjects.Things;
 using WimdioApiProxy.v2.DataTransferObjects.Users;
 using WimdioApiProxy.v2.DataTransferObjects.DropBox;
+using WimdioApiProxy.v2.DataTransferObjects.Sensors;
 
 namespace WimdioApiProxy.v2
 {
@@ -60,6 +61,12 @@ namespace WimdioApiProxy.v2
         Task<Device> ReadDevice(Guid deviceId);
         Task<Device> UpdateDevice(Guid deviceId, NewDevice device);
         Task DeleteDevice(Guid deviceId);
+
+        Task<Sensor> CreateSensor(Guid deviceId, Sensor device);
+        Task<Sensor> UpdateSensor(Guid deviceId, SensorUpdate device);
+        Task DeleteSensor(Guid deviceId, string remoteId);
+        Task SensorAddData (Guid deviceId, string remoteId, IEnumerable<Serie> series);
+        Task SensorsAddData(Guid deviceId, string remoteId, IEnumerable<Serie> series);
 
         Task<IEnumerable<Formula>> ReadFormulas();
         Task<Formula> CreateFormula(NewFormula formula);

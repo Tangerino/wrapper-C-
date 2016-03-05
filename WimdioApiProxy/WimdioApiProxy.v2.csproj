@@ -66,6 +66,9 @@
     <Compile Include="DataTransferObjects\Formulas\Formula.cs" />
     <Compile Include="DataTransferObjects\NormalizationFactors\NewNormalizationFactor.cs" />
     <Compile Include="DataTransferObjects\NormalizationFactors\NormalizationFactorValue.cs" />
+    <Compile Include="DataTransferObjects\Sensors\Sensor.cs" />
+    <Compile Include="DataTransferObjects\Sensors\SensorUpdate.cs" />
+    <Compile Include="DataTransferObjects\Sensors\Serie.cs" />
     <Compile Include="DataTransferObjects\Things\NewThing.cs" />
     <Compile Include="DataTransferObjects\Places\NewPlace.cs" />
     <Compile Include="DataTransferObjects\NormalizationFactors\NormalizationFactor.cs" />
@@ -95,6 +98,7 @@
   <ItemGroup>
     <Folder Include="DataTransferObjects\RemoteSensors\" />
     <Folder Include="DataTransferObjects\Sensors\" />
+    <Folder Include="DataTransferObjects\DropBox\" />
     <Folder Include="DataTransferObjects\ShadowDevice\" />
     <Folder Include="DataTransferObjects\TimeSeries\" />
     <Folder Include="DataTransferObjects\VirtualSensor\" />

@@ -15,6 +15,7 @@ using WimdioApiProxy.v2.DataTransferObjects.NormalizationFactors;
 using WimdioApiProxy.v2.DataTransferObjects.Devices;
 using WimdioApiProxy.v2.DataTransferObjects.Formulas;
 using WimdioApiProxy.v2.DataTransferObjects.DropBox;
+using WimdioApiProxy.v2.DataTransferObjects.Sensors;
 
 namespace WimdioApiProxy.v2
 {
@@ -629,6 +630,34 @@ namespace WimdioApiProxy.v2
 
                 throw new WimdioApiClientException(ex.Message, ex);
             }
+        }
+
+        public async Task<Sensor> CreateSensor(Guid deviceId, Sensor sensor)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return (await client.Post<Sensor[]>($"sensor", sensor))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"CreateSensor(deviceId={deviceId}, sensor={JsonConvert.SerializeObject(sensor)}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<Sensor> UpdateSensor(Guid deviceId, SensorUpdate sensor)
+        {
+        }
+        public async Task DeleteSensor(Guid deviceId, string remoteId)
+        {
+        }
+        public async Task SensorAddData(Guid deviceId, string remoteId, IEnumerable<Serie> series)
+        {
+        }
+        public async Task SensorsAddData(Guid deviceId, string remoteId, IEnumerable<Serie> series)
+        {
         }
 
         public async Task<IEnumerable<Formula>> ReadFormulas()
