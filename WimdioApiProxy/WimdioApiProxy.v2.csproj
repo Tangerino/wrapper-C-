@@ -52,6 +52,9 @@
     <Compile Include="DataTransferObjects\Accounts\Credentials.cs" />
     <Compile Include="DataTransferObjects\Devices\NewDevice.cs" />
     <Compile Include="DataTransferObjects\Devices\Device.cs" />
+    <Compile Include="DataTransferObjects\DropBox\DeviceFileInfo.cs" />
+    <Compile Include="DataTransferObjects\DropBox\FileInfo.cs" />
+    <Compile Include="DataTransferObjects\DropBox\NewFile.cs" />
     <Compile Include="DataTransferObjects\EmptyObject.cs" />
     <Compile Include="DataTransferObjects\ErrorResponse.cs" />
     <Compile Include="DataTransferObjects\BasicResponse.cs" />
@@ -90,7 +93,6 @@
     <Compile Include="WimdioApiClientException.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="DataTransferObjects\DropBox\" />
     <Folder Include="DataTransferObjects\RemoteSensors\" />
     <Folder Include="DataTransferObjects\Sensors\" />
     <Folder Include="DataTransferObjects\ShadowDevice\" />
@@ -98,7 +100,6 @@
     <Folder Include="DataTransferObjects\VirtualSensor\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include=".gitignore" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

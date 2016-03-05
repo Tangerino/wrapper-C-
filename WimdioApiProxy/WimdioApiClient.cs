@@ -14,6 +14,7 @@ using WimdioApiProxy.v2.DataTransferObjects.Users;
 using WimdioApiProxy.v2.DataTransferObjects.NormalizationFactors;
 using WimdioApiProxy.v2.DataTransferObjects.Devices;
 using WimdioApiProxy.v2.DataTransferObjects.Formulas;
+using WimdioApiProxy.v2.DataTransferObjects.DropBox;
 
 namespace WimdioApiProxy.v2
 {
@@ -718,6 +719,96 @@ namespace WimdioApiProxy.v2
             catch (Exception ex)
             {
                 _log.Error($"DeleteFormula(formulaId={formulaId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+
+        public async Task<FileInfo> SendFileToDevice(Guid deviceId, NewFile file)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                if (file.Type == FileType.FIRMWARE_UPGRADE)
+                {
+                    await client.Post<BasicResponse>($"dropbox/{deviceId}/upload", file);
+                    return null;
+                }
+                else
+                {
+                    return (await client.Post<FileInfo[]>($"dropbox/{deviceId}/upload", file))?.FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"SendFileToDevice(deviceId={deviceId}, file={JsonConvert.SerializeObject(file)}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<IEnumerable<FileInfo>> ReadFilesInformation(Guid deviceId, DateTime startDate, DateTime endDate)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return await client.Get<FileInfo[]>($"dropbox/{deviceId}/info/{startDate.ToString("o")}/{endDate.ToString("o")}");
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"ReadFilesInformation(deviceId={deviceId}, startDate={startDate.ToString("o")}, endDate={endDate.ToString("o")}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task DeleteFile(Guid deviceId, Guid fileId)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                await client.Delete<BasicResponse>($"dropbox/{deviceId}/{fileId}");
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"DeleteFile(deviceId={deviceId}, fileId={fileId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<DeviceFileInfo> DeviceReadFileInfo(string devkey)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                client.AddCustomHeader(nameof(devkey), devkey);
+
+                return (await client.Get<DeviceFileInfo[]>($"dropbox/device/info"))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"DeviceReadFileInfo(devkey={devkey}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<bool> DeviceAcknowledgeFile(string devkey, Guid fileId, Status status)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                client.AddCustomHeader(nameof(devkey), devkey);
+
+                var response = await client.Post<BasicResponse>($"dropbox/device/ack/{fileId}/{status}", new EmptyObject());
+
+                return response.Code == 200;
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"DeviceAcknowledgeFile(devkey={devkey}, fileId={fileId}, status={status}) failed", ex);
 
                 throw new WimdioApiClientException(ex.Message, ex);
             }

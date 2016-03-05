@@ -10,5 +10,13 @@ namespace WimdioApiProxy.v2.Rest
                 CustomHeaders.Add("apikey", apiKey);
             }
         }
+
+        public void AddCustomHeader(string key, string value)
+        {
+            if (string.IsNullOrWhiteSpace(key))
+                return;
+
+            CustomHeaders.Add(key, value);
+        }
     }
 }

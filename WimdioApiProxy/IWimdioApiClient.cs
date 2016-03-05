@@ -9,6 +9,7 @@ using WimdioApiProxy.v2.DataTransferObjects.NormalizationFactors;
 using WimdioApiProxy.v2.DataTransferObjects.Places;
 using WimdioApiProxy.v2.DataTransferObjects.Things;
 using WimdioApiProxy.v2.DataTransferObjects.Users;
+using WimdioApiProxy.v2.DataTransferObjects.DropBox;
 
 namespace WimdioApiProxy.v2
 {
@@ -66,6 +67,12 @@ namespace WimdioApiProxy.v2
         Task<string> ReadFormulaCode(Guid formulaId);
         Task<Formula> UpdateFormula(Guid formulaId, NewFormula formula);
         Task DeleteFormula(Guid formulaId);
+
+        Task<FileInfo> SendFileToDevice(Guid deviceId, NewFile file);
+        Task<IEnumerable<FileInfo>> ReadFilesInformation(Guid deviceId, DateTime startDate, DateTime endDate);
+        Task DeleteFile(Guid deviceId, Guid fileId);
+        Task<DeviceFileInfo> DeviceReadFileInfo(string devkey);
+        Task<bool> DeviceAcknowledgeFile(string devkey, Guid fileId, Status status);
 
         Task<IEnumerable<Etl>> ReadEtls();
         Task<Etl> CreateEtl(NewEtl etl);
