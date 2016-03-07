@@ -64,23 +64,20 @@ namespace WimdioApiProxy.v2.Tests
         [TestMethod()]
         public void UpdateUser_Positive()
         {
-            UpdateUser expected = null;
+            User expected = null;
             User actual = null;
-
             Func<Task> asyncFunction = async () =>
             {
-                var user = await CreateUser(Client, UsersCreated);
-                expected = new UpdateUser
+                expected = await CreateUser(Client, UsersCreated);
+                var update = new UpdateUser(expected)
                 {
-                    FirstName = user.FirstName + "Updated",
-                    LastName = user.LastName + "Updated",
+                    FirstName = expected.FirstName + "Updated",
                 };
-
-                actual = await Client.UpdateUser(user.Id, expected);
+                actual = await Client.UpdateUser(expected.Id, update);
             };
             asyncFunction.ShouldNotThrow("Method should not throw");
             actual.Should().NotBeNull("User should not be NULL");
-            actual.FirstName.Should().Be(expected.FirstName, "Unexpected user firstname");
+            actual.FirstName.Should().NotBe(expected.FirstName, "Unexpected user firstname");
             actual.LastName.Should().Be(expected.LastName, "Unexpected user lastname");
         }
 

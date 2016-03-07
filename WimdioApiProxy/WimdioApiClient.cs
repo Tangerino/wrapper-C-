@@ -278,7 +278,7 @@ namespace WimdioApiProxy.v2
                 throw new WimdioApiClientException(ex.Message, ex);
             }
         }
-        public async Task<Place> UpdatePlace(Guid placeId, NewPlace place)
+        public async Task<Place> UpdatePlace(Guid placeId, UpdatePlace place)
         {
             try
             {
@@ -386,7 +386,7 @@ namespace WimdioApiProxy.v2
                 throw new WimdioApiClientException(ex.Message, ex);
             }
         }
-        public async Task<NormalizationFactor> UpdateNormalizationFactor(Guid normalizationFactorId, NewNormalizationFactor normalizationFactor)
+        public async Task<NormalizationFactor> UpdateNormalizationFactor(Guid normalizationFactorId, UpdateNormalizationFactor normalizationFactor)
         {
             try
             {
@@ -434,13 +434,15 @@ namespace WimdioApiProxy.v2
                 throw new WimdioApiClientException(ex.Message, ex);
             }
         }
-        public async Task CreateNormalizationFactorValue(Guid normalizationFactorId, NormalizationFactorValue normalizationFactorValue)
+        public async Task<NormalizationFactorValue> CreateNormalizationFactorValue(Guid normalizationFactorId, NormalizationFactorValue normalizationFactorValue)
         {
             try
             {
                 var client = new ApiRequestClient(_baseUrl, _apiKey);
 
-                await client.Post<NormalizationFactorValue[]>($"nf/{normalizationFactorId}/value", normalizationFactorValue);
+                await client.Post<BasicResponse>($"nf/{normalizationFactorId}/value", normalizationFactorValue);
+
+                return normalizationFactorValue;
             }
             catch (Exception ex)
             {
@@ -449,13 +451,15 @@ namespace WimdioApiProxy.v2
                 throw new WimdioApiClientException(ex.Message, ex);
             }
         }
-        public async Task UpdateNormalizationFactorValue(Guid normalizationFactorId, NormalizationFactorValue normalizationFactorValue)
+        public async Task<NormalizationFactorValue> UpdateNormalizationFactorValue(Guid normalizationFactorId, UpdateNormalizationFactorValue normalizationFactorValue)
         {
             try
             {
                 var client = new ApiRequestClient(_baseUrl, _apiKey);
 
                 await client.Put<BasicResponse>($"nf/{normalizationFactorId}/value", normalizationFactorValue);
+
+                return (await ReadNormalizationFactorValues(normalizationFactorId))?.FirstOrDefault(x => x.Timestamp == normalizationFactorValue.Timestamp);
             }
             catch (Exception ex)
             {
@@ -525,7 +529,7 @@ namespace WimdioApiProxy.v2
                 throw new WimdioApiClientException(ex.Message, ex);
             }
         }
-        public async Task<Thing> UpdateThing(Guid thingId, NewThing thing)
+        public async Task<Thing> UpdateThing(Guid thingId, UpdateThing thing)
         {
             try
             {
@@ -601,7 +605,7 @@ namespace WimdioApiProxy.v2
                 throw new WimdioApiClientException(ex.Message, ex);
             }
         }
-        public async Task<Device> UpdateDevice(Guid deviceId, NewDevice device)
+        public async Task<Device> UpdateDevice(Guid deviceId, UpdateDevice device)
         {
             try
             {
@@ -632,34 +636,62 @@ namespace WimdioApiProxy.v2
             }
         }
 
-        public async Task<Sensor> CreateSensor(Guid deviceId, Sensor sensor)
+        public async Task<IEnumerable<Sensor>> ReadSensors(Guid deviceId)
         {
             try
             {
                 var client = new ApiRequestClient(_baseUrl, _apiKey);
 
-                return (await client.Post<Sensor[]>($"sensor", sensor))?.FirstOrDefault();
+                return await client.Get<Sensor[]>($"device/{deviceId}/sensors");
             }
             catch (Exception ex)
             {
-                _log.Error($"CreateSensor(deviceId={deviceId}, sensor={JsonConvert.SerializeObject(sensor)}) failed", ex);
+                _log.Error($"ReadSensors(deviceId={deviceId}) failed", ex);
 
                 throw new WimdioApiClientException(ex.Message, ex);
             }
         }
-        public async Task<Sensor> UpdateSensor(Guid deviceId, SensorUpdate sensor)
+        public async Task<Sensor> CreateSensor(string devkey, NewSensor sensor)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+                client.AddCustomHeader(nameof(devkey), devkey);
+
+                return (await client.Post<Sensor[]>($"sensor", sensor))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"CreateSensor(devkey={devkey}, sensor={JsonConvert.SerializeObject(sensor)}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<Sensor> UpdateSensor(string devkey, string remoteId, UpdateSensor sensor)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+                client.AddCustomHeader(nameof(devkey), devkey);
+
+                return (await client.Put<Sensor[]>($"sensor/{remoteId}", sensor))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"UpdateSensor(devkey={devkey}, remoteId={remoteId}, sensor={JsonConvert.SerializeObject(sensor)}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task DeleteSensor(string devkey, string remoteId)
         {
             throw new NotImplementedException();
         }
-        public async Task DeleteSensor(Guid deviceId, string remoteId)
+        public async Task SensorAddData(string devkey, string remoteId, IEnumerable<Serie> series)
         {
             throw new NotImplementedException();
         }
-        public async Task SensorAddData(Guid deviceId, string remoteId, IEnumerable<Serie> series)
-        {
-            throw new NotImplementedException();
-        }
-        public async Task SensorsAddData(Guid deviceId, string remoteId, IEnumerable<Serie> series)
+        public async Task SensorsAddData(string devkey, string remoteId, IEnumerable<Serie> series)
         {
             throw new NotImplementedException();
         }
@@ -686,8 +718,9 @@ namespace WimdioApiProxy.v2
             try
             {
                 var client = new ApiRequestClient(_baseUrl, _apiKey);
-
-                return (await client.Post<Formula[]>("formula", formula))?.FirstOrDefault();
+                var created = (await client.Post<Formula[]>("formula", formula))?.FirstOrDefault();
+                formula.Code = await ReadFormulaCode(created.Id);
+                return created;
             }
             catch (Exception ex)
             {
@@ -701,8 +734,9 @@ namespace WimdioApiProxy.v2
             try
             {
                 var client = new ApiRequestClient(_baseUrl, _apiKey);
-
-                return (await client.Get<Formula[]>($"formula/{formulaId}"))?.FirstOrDefault();
+                var formula = (await client.Get<Formula[]>($"formula/{formulaId}"))?.FirstOrDefault();
+                formula.Code = await ReadFormulaCode(formula.Id);
+                return formula;
             }
             catch (Exception ex)
             {
@@ -726,13 +760,14 @@ namespace WimdioApiProxy.v2
                 throw new WimdioApiClientException(ex.Message, ex);
             }
         }
-        public async Task<Formula> UpdateFormula(Guid formulaId, NewFormula formula)
+        public async Task<Formula> UpdateFormula(Guid formulaId, UpdateFormula formula)
         {
             try
             {
                 var client = new ApiRequestClient(_baseUrl, _apiKey);
-
-                return (await client.Put<Formula[]>($"formula/{formulaId}", formula))?.FirstOrDefault();
+                var updated = (await client.Put<Formula[]>($"formula/{formulaId}", formula))?.FirstOrDefault();
+                updated.Code = await ReadFormulaCode(updated.Id);
+                return updated;
             }
             catch (Exception ex)
             {
@@ -894,7 +929,7 @@ namespace WimdioApiProxy.v2
                 throw new WimdioApiClientException(ex.Message, ex);
             }
         }
-        public async Task<Etl> UpdateEtl(Guid etlId, NewEtl etl)
+        public async Task<Etl> UpdateEtl(Guid etlId, UpdateEtl etl)
         {
             try
             {

@@ -34,7 +34,7 @@ namespace WimdioApiProxy.v2
         Task<IEnumerable<Place>> ReadPlaces();
         Task<Place> CreatePlace(NewPlace place);
         Task<Place> ReadPlace(Guid placeId);
-        Task<Place> UpdatePlace(Guid placeId, NewPlace place);
+        Task<Place> UpdatePlace(Guid placeId, UpdatePlace place);
         Task DeletePlace(Guid placeId);
         Task LinkPlace(Guid placeId, Guid userId);
         Task UnlinkPlace(Guid placeId, Guid userId);
@@ -42,37 +42,38 @@ namespace WimdioApiProxy.v2
         Task<IEnumerable<NormalizationFactor>> ReadNormalizationFactors(Guid placeId);
         Task<NormalizationFactor> CreateNormalizationFactor(Guid placeId, NewNormalizationFactor normalizationFactor);
         Task<NormalizationFactor> ReadNormalizationFactor(Guid normalizationFactorId);
-        Task<NormalizationFactor> UpdateNormalizationFactor(Guid normalizationFactorId, NewNormalizationFactor normalizationFactor);
+        Task<NormalizationFactor> UpdateNormalizationFactor(Guid normalizationFactorId, UpdateNormalizationFactor normalizationFactor);
         Task DeleteNormalizationFactor(Guid normalizationFactorId);
 
         Task<IEnumerable<NormalizationFactorValue>> ReadNormalizationFactorValues(Guid normalizationFactorId);
-        Task CreateNormalizationFactorValue(Guid normalizationFactorId, NormalizationFactorValue normalizationFactorValue);
-        Task UpdateNormalizationFactorValue(Guid normalizationFactorId, NormalizationFactorValue normalizationFactorValue);
+        Task<NormalizationFactorValue> CreateNormalizationFactorValue(Guid normalizationFactorId, NormalizationFactorValue normalizationFactorValue);
+        Task<NormalizationFactorValue> UpdateNormalizationFactorValue(Guid normalizationFactorId, UpdateNormalizationFactorValue normalizationFactorValue);
         Task DeleteNormalizationFactorValue(Guid normalizationFactorId, DateTime date);
 
         Task<IEnumerable<Thing>> ReadThings(Guid placeId);
         Task<Thing> CreateThing(Guid placeId, NewThing thing);
         Task<Thing> ReadThing(Guid thingId);
-        Task<Thing> UpdateThing(Guid thingId, NewThing thing);
+        Task<Thing> UpdateThing(Guid thingId, UpdateThing thing);
         Task DeleteThing(Guid thingId);
 
         Task<IEnumerable<Device>> ReadDevices();
         Task<Device> CreateDevice(NewDevice device);
         Task<Device> ReadDevice(Guid deviceId);
-        Task<Device> UpdateDevice(Guid deviceId, NewDevice device);
+        Task<Device> UpdateDevice(Guid deviceId, UpdateDevice device);
         Task DeleteDevice(Guid deviceId);
 
-        Task<Sensor> CreateSensor(Guid deviceId, Sensor device);
-        Task<Sensor> UpdateSensor(Guid deviceId, SensorUpdate device);
-        Task DeleteSensor(Guid deviceId, string remoteId);
-        Task SensorAddData (Guid deviceId, string remoteId, IEnumerable<Serie> series);
-        Task SensorsAddData(Guid deviceId, string remoteId, IEnumerable<Serie> series);
+        Task<IEnumerable<Sensor>> ReadSensors(Guid deviceId);
+        Task<Sensor> CreateSensor(string devkey, NewSensor device);
+        Task<Sensor> UpdateSensor(string devkey, string remoteId, UpdateSensor device);
+        Task DeleteSensor(string devkey, string remoteId);
+        Task SensorAddData (string devkey, string remoteId, IEnumerable<Serie> series);
+        Task SensorsAddData(string devkey, string remoteId, IEnumerable<Serie> series);
 
         Task<IEnumerable<Formula>> ReadFormulas();
         Task<Formula> CreateFormula(NewFormula formula);
         Task<Formula> ReadFormula(Guid formulaId);
         Task<string> ReadFormulaCode(Guid formulaId);
-        Task<Formula> UpdateFormula(Guid formulaId, NewFormula formula);
+        Task<Formula> UpdateFormula(Guid formulaId, UpdateFormula formula);
         Task DeleteFormula(Guid formulaId);
 
         Task<FileInfo> SendFileToDevice(Guid deviceId, NewFile file);
@@ -84,7 +85,7 @@ namespace WimdioApiProxy.v2
         Task<IEnumerable<Etl>> ReadEtls();
         Task<Etl> CreateEtl(NewEtl etl);
         Task<Etl> ReadEtl(Guid etlId);
-        Task<Etl> UpdateEtl(Guid etlId, NewEtl etl);
+        Task<Etl> UpdateEtl(Guid etlId, UpdateEtl etl);
         Task DeleteEtl(Guid etlId);
     }
 }

@@ -38,7 +38,6 @@ namespace WimdioApiProxy.v2.Tests
             {
                 actual = await CreateFormula(Client, FormulasCreated);
             };
-
             asyncFunction.ShouldNotThrow("Method should not throw");
             actual.Should().NotBeNull("Actual value should not be NULL");
         }
@@ -52,7 +51,6 @@ namespace WimdioApiProxy.v2.Tests
             {
                 expected = await CreateFormula(Client, FormulasCreated);
                 actual = await Client.ReadFormula(expected.Id);
-                actual.Code = await Client.ReadFormulaCode(expected.Id);
             };
             asyncFunction.ShouldNotThrow("Method should not throw");
             actual.Should().NotBeNull("Actual value should not be NULL");
@@ -65,23 +63,22 @@ namespace WimdioApiProxy.v2.Tests
         [TestMethod()]
         public void UpdateFormula_Positive()
         {
-            NewFormula expected = null;
+            Formula expected = null;
             Formula actual = null;
             Func<Task> asyncFunction = async () =>
             {
-                var formula = await CreateFormula(Client, FormulasCreated);
-                expected = new NewFormula
+                expected = await CreateFormula(Client, FormulasCreated);
+                var update = new UpdateFormula(expected)
                 {
-                    Name = formula.Name + "Updated",
-                    Code = formula.Code + " * 1",
+                    Name = expected.Name + "Updated",
+                    Code = expected.Code + " * 1",
                 };
-                actual = await Client.UpdateFormula(formula.Id, expected);
-                actual.Code = await Client.ReadFormulaCode(formula.Id);
+                actual = await Client.UpdateFormula(expected.Id, update);
             };
             asyncFunction.ShouldNotThrow("Method should not throw");
             actual.Should().NotBeNull("Actual value should not be NULL");
-            actual.Name.Should().Be(expected.Name, "Unexpected name");
-            actual.Code.Should().Be(expected.Code, "Unexpected code");
+            actual.Name.Should().NotBe(expected.Name, "Unexpected name");
+            actual.Code.Should().NotBe(expected.Code, "Unexpected code");
             actual.Library.Should().Be(expected.Library, "Unexpected library");
         }
 

@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="DataTransferObjects\Accounts\Account.cs" />
     <Compile Include="DataTransferObjects\Accounts\Credentials.cs" />
+    <Compile Include="DataTransferObjects\Devices\UpdateDevice.cs" />
     <Compile Include="DataTransferObjects\Devices\NewDevice.cs" />
     <Compile Include="DataTransferObjects\Devices\Device.cs" />
     <Compile Include="DataTransferObjects\DropBox\DeviceFileInfo.cs" />
@@ -60,21 +61,27 @@
     <Compile Include="DataTransferObjects\BasicResponse.cs" />
     <Compile Include="DataTransferObjects\Accounts\LoginResponse.cs" />
     <Compile Include="DataTransferObjects\Etls\Etl.cs" />
+    <Compile Include="DataTransferObjects\Etls\UpdateEtl.cs" />
     <Compile Include="DataTransferObjects\Etls\NewEtl.cs" />
     <Compile Include="DataTransferObjects\Formulas\FormulaCode.cs" />
+    <Compile Include="DataTransferObjects\Formulas\UpdateFormula.cs" />
     <Compile Include="DataTransferObjects\Formulas\NewFormula.cs" />
     <Compile Include="DataTransferObjects\Formulas\Formula.cs" />
+    <Compile Include="DataTransferObjects\NormalizationFactors\UpdateNormalizationFactor.cs" />
     <Compile Include="DataTransferObjects\NormalizationFactors\NewNormalizationFactor.cs" />
     <Compile Include="DataTransferObjects\NormalizationFactors\NormalizationFactorValue.cs" />
+    <Compile Include="DataTransferObjects\NormalizationFactors\UpdateNormalizationFactorValue.cs" />
+    <Compile Include="DataTransferObjects\Places\UpdatePlace.cs" />
+    <Compile Include="DataTransferObjects\Sensors\NewSensor.cs" />
     <Compile Include="DataTransferObjects\Sensors\Sensor.cs" />
-    <Compile Include="DataTransferObjects\Sensors\SensorUpdate.cs" />
+    <Compile Include="DataTransferObjects\Sensors\UpdateSensor.cs" />
     <Compile Include="DataTransferObjects\Sensors\Serie.cs" />
     <Compile Include="DataTransferObjects\Things\NewThing.cs" />
     <Compile Include="DataTransferObjects\Places\NewPlace.cs" />
     <Compile Include="DataTransferObjects\NormalizationFactors\NormalizationFactor.cs" />
     <Compile Include="DataTransferObjects\Things\Thing.cs" />
     <Compile Include="DataTransferObjects\Places\Place.cs" />
-    <Compile Include="DataTransferObjects\Users\BaseUser.cs" />
+    <Compile Include="DataTransferObjects\Things\UpdateThing.cs" />
     <Compile Include="DataTransferObjects\Users\NewUser.cs" />
     <Compile Include="DataTransferObjects\Users\Permission.cs" />
     <Compile Include="DataTransferObjects\Users\UpdateUser.cs" />
@@ -97,8 +104,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DataTransferObjects\RemoteSensors\" />
-    <Folder Include="DataTransferObjects\Sensors\" />
-    <Folder Include="DataTransferObjects\DropBox\" />
     <Folder Include="DataTransferObjects\ShadowDevice\" />
     <Folder Include="DataTransferObjects\TimeSeries\" />
     <Folder Include="DataTransferObjects\VirtualSensor\" />

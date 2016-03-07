@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -67,21 +68,22 @@ namespace WimdioApiProxy.v2.Tests
         [TestMethod()]
         public void UpdateEtl_Positive()
         {
-            NewEtl expected = null;
+            Etl expected = null;
             Etl actual = null;
             Func<Task> asyncFunction = async () =>
             {
                 var place = await CreatePlace(Client, PlacesCreated);
-                var etl = await CreateEtl(Client, place, EtlsCreated);
-                expected = new NewEtl
+                expected = await CreateEtl(Client, place, EtlsCreated);
+                var update = new UpdateEtl(expected)
                 {
-                    Name = etl.Name + "Updated",
+                    Name = expected.Name + "Updated",
                 };
-                actual = await Client.UpdateEtl(place.Id, expected);
+                actual = await Client.UpdateEtl(expected.Id, update);
             };
             asyncFunction.ShouldNotThrow("Method should not throw");
             actual.Should().NotBeNull("Actual value should not be NULL");
-            actual.Name.Should().Be(expected.Name, "Unexpected name");
+            actual.Name.Should().NotBe(expected.Name, "Unexpected name");
+            actual.Username.Should().Be(expected.Username, "Unexpected username");
         }
 
         [TestMethod()]
@@ -94,7 +96,7 @@ namespace WimdioApiProxy.v2.Tests
                 actual = await CreateEtl(Client, place, EtlsCreated);
 
                 await Client.DeleteEtl(actual.Id);
-                actual = await Client.ReadEtl(actual.Id);
+                actual = (await Client.ReadEtls()).FirstOrDefault(x => x.Id == actual.Id);
             };
             asyncFunction.ShouldNotThrow("Method should not throw");
             actual.Should().BeNull("Actual value should be NULL");

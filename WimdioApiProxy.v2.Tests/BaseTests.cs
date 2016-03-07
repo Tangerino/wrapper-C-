@@ -11,6 +11,7 @@ using WimdioApiProxy.v2.DataTransferObjects.Places;
 using WimdioApiProxy.v2.DataTransferObjects.Things;
 using WimdioApiProxy.v2.DataTransferObjects.Users;
 using WimdioApiProxy.v2.DataTransferObjects.DropBox;
+using WimdioApiProxy.v2.DataTransferObjects.Sensors;
 
 namespace WimdioApiProxy.v2.Tests
 {
@@ -104,7 +105,7 @@ namespace WimdioApiProxy.v2.Tests
                 Value = rnd.Next(100000).ToString(),
             };
 
-            await client.CreateNormalizationFactorValue(nf.Id, normalizationFactorValue);
+            normalizationFactorValue = await client.CreateNormalizationFactorValue(nf.Id, normalizationFactorValue);
             normalizationFactorValuesCreated?.Add(nf.Id, normalizationFactorValue);
 
             return normalizationFactorValue;
@@ -134,13 +135,32 @@ namespace WimdioApiProxy.v2.Tests
             {
                 Name = $"Name {random}",
                 Description = $"Description {random}",
-                Mac = random
+                Mac = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 20)
             };
 
             var created = await client.CreateDevice(device);
             devicesCreated?.Add(created);
 
             return created;
+        }
+
+        internal static async Task<Sensor> CreateSensor(IWimdioApiClient client, Device device, IDictionary<string, Sensor> SensorsCreated)
+        {
+            var random = Guid.NewGuid().ToString().Split('-').First();
+
+            var newSensor = new NewSensor
+            {
+                RemoteId = random,
+                Name = $"Name {random}",
+                Description = $"Description {random}",
+                Unit = "ppm",
+                Tseoi = 0
+            };
+
+            var sensor = await client.CreateSensor(device.DevKey, newSensor);
+            SensorsCreated?.Add(device.DevKey, sensor);
+
+            return sensor;
         }
 
         internal static async Task<Formula> CreateFormula(IWimdioApiClient client, List<Formula> formulasCreated)

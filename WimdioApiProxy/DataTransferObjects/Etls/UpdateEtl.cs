@@ -1,11 +1,22 @@
 ﻿using System;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 
 namespace WimdioApiProxy.v2.DataTransferObjects.Etls
 {
-    public class NewEtl
+    public class UpdateEtl
     {
+        public UpdateEtl(Etl etl)
+        {
+            Name = etl.Name;
+            Endpoint = etl.Endpoint;
+            Username = etl.Username;
+            Password = etl.Password;
+            Type = etl.Type;
+            PlaceId = etl.PlaceId;
+            DatabaseName = etl.DatabaseName;
+            TableName = etl.TableName;
+        }
+
         [JsonProperty("name")]
         public string Name { get; set; }
 
@@ -29,10 +40,5 @@ namespace WimdioApiProxy.v2.DataTransferObjects.Etls
 
         [JsonProperty("table")]
         public string TableName { get; set; }
-    }
-
-    public enum EtlType
-    {
-        InfluxDB = 1,
     }
 }
