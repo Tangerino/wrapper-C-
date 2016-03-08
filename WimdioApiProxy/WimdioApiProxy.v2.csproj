@@ -73,9 +73,12 @@
     <Compile Include="DataTransferObjects\NormalizationFactors\UpdateNormalizationFactorValue.cs" />
     <Compile Include="DataTransferObjects\Places\UpdatePlace.cs" />
     <Compile Include="DataTransferObjects\Sensors\NewSensor.cs" />
+    <Compile Include="DataTransferObjects\Sensors\Rule.cs" />
     <Compile Include="DataTransferObjects\Sensors\Sensor.cs" />
+    <Compile Include="DataTransferObjects\Sensors\UpdateRule.cs" />
     <Compile Include="DataTransferObjects\Sensors\UpdateSensor.cs" />
     <Compile Include="DataTransferObjects\Sensors\Serie.cs" />
+    <Compile Include="DataTransferObjects\Sensors\Variable.cs" />
     <Compile Include="DataTransferObjects\Things\NewThing.cs" />
     <Compile Include="DataTransferObjects\Places\NewPlace.cs" />
     <Compile Include="DataTransferObjects\NormalizationFactors\NormalizationFactor.cs" />

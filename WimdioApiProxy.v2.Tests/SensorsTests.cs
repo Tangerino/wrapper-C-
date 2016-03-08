@@ -49,6 +49,20 @@ namespace WimdioApiProxy.v2.Tests
         }
 
         [TestMethod()]
+        public void ReadSensor_Positive()
+        {
+            Sensor actual = null;
+            Func<Task> asyncFunction = async () =>
+            {
+                var device = await CreateDevice(Client, DevicesCreated);
+                actual = await CreateSensor(Client, device, SensorsCreated);
+                actual = await Client.ReadSensor(actual.Id);
+            };
+            asyncFunction.ShouldNotThrow("Method should not throw");
+            actual.Should().NotBeNull("Actual value should not be NULL");
+        }
+
+        [TestMethod()]
         public void UpdateSensor_Positive()
         {
             Sensor expected = null;
@@ -70,6 +84,79 @@ namespace WimdioApiProxy.v2.Tests
             actual.Description.Should().NotBe(expected.Description, "Actual description should be updated");
             actual.Unit.Should().Be(expected.Unit, "Actual unit should not be updated");
             actual.Tseoi.Should().NotBe(expected.Tseoi, "Actual TSEOI should be updated");
+        }
+
+        [TestMethod()]
+        public void DeleteSensor_Positive()
+        {
+            Sensor actual = null;
+            Func<Task> asyncFunction = async () =>
+            {
+                var device = await CreateDevice(Client, DevicesCreated);
+                actual = await CreateSensor(Client, device, SensorsCreated);
+                await Client.DeleteSensor(device.DevKey, actual.RemoteId);
+                actual = (await Client.ReadSensors(device.Id))?.FirstOrDefault(x => x.RemoteId.Equals(actual.RemoteId));
+            };
+            asyncFunction.ShouldNotThrow("Method should not throw");
+            actual.Should().BeNull("Actual should be deleted");
+        }
+
+        [TestMethod()]
+        public void SensorAddData_Positive()
+        {
+            IEnumerable<Serie> actual = null;
+            Func<Task> asyncFunction = async () =>
+            {
+                var device = await CreateDevice(Client, DevicesCreated);
+                var sensor = await CreateSensor(Client, device, SensorsCreated);
+                await Client.SensorAddData(device.DevKey, sensor.RemoteId, actual);
+            };
+            asyncFunction.ShouldNotThrow("Method should not throw");
+            actual.Should().NotBeNull("Actual value should not be NULL");
+        }
+
+        [TestMethod()]
+        public void SensorsAddData_Positive()
+        {
+            IEnumerable<Serie> actual = null;
+            Func<Task> asyncFunction = async () =>
+            {
+                var device = await CreateDevice(Client, DevicesCreated);
+                var sensor = await CreateSensor(Client, device, SensorsCreated);
+                await Client.SensorsAddData(device.DevKey, sensor.RemoteId, actual);
+            };
+            asyncFunction.ShouldNotThrow("Method should not throw");
+            actual.Should().NotBeNull("Actual value should not be NULL");
+        }
+
+        [TestMethod()]
+        public void ReadSensorRule_Positive()
+        {
+            Rule actual = null;
+            Func<Task> asyncFunction = async () =>
+            {
+                var device = await CreateDevice(Client, DevicesCreated);
+                var sensor = await CreateSensor(Client, device, SensorsCreated);
+                actual = await Client.ReadSensorRule(sensor.Id);
+            };
+            asyncFunction.ShouldNotThrow("Method should not throw");
+            actual.Should().NotBeNull("Actual value should not be NULL");
+        }
+
+        [TestMethod()]
+        public void UpdateSensorRule_Positive()
+        {
+            UpdateRule expected = null;
+            Rule actual = null;
+            Func<Task> asyncFunction = async () =>
+            {
+                var device = await CreateDevice(Client, DevicesCreated);
+                var sensor = await CreateSensor(Client, device, SensorsCreated);
+                expected = new UpdateRule();
+                actual = await Client.UpdateSensorRule(sensor.Id, expected);
+            };
+            asyncFunction.ShouldNotThrow("Method should not throw");
+            actual.Should().NotBeNull("Actual value should not be NULL");
         }
     }
 }

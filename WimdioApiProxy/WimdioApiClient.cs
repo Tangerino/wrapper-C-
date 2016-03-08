@@ -667,6 +667,21 @@ namespace WimdioApiProxy.v2
                 throw new WimdioApiClientException(ex.Message, ex);
             }
         }
+        public async Task<Sensor> ReadSensor(Guid sensorId)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return (await client.Get<Sensor[]>($"sensor/{sensorId}"))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"ReadSensor(sensorId={sensorId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
         public async Task<Sensor> UpdateSensor(string devkey, string remoteId, UpdateSensor sensor)
         {
             try
@@ -685,13 +700,33 @@ namespace WimdioApiProxy.v2
         }
         public async Task DeleteSensor(string devkey, string remoteId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+                client.AddCustomHeader(nameof(devkey), devkey);
+
+                await client.Delete<BasicResponse>($"sensor/{remoteId}");
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"DeleteSensor(devkey={devkey}, remoteId={remoteId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
         }
         public async Task SensorAddData(string devkey, string remoteId, IEnumerable<Serie> series)
         {
             throw new NotImplementedException();
         }
         public async Task SensorsAddData(string devkey, string remoteId, IEnumerable<Serie> series)
+        {
+            throw new NotImplementedException();
+        }
+        public async Task<Rule> ReadSensorRule(Guid sensorId)
+        {
+            throw new NotImplementedException();
+        }
+        public async Task<Rule> UpdateSensorRule(Guid sensorId, UpdateRule rule)
         {
             throw new NotImplementedException();
         }

@@ -46,6 +46,7 @@ namespace WimdioApiProxy.v2.Tests
 
             asyncFunction.ShouldNotThrow("Method should not throw");
             actual.Should().NotBeNull("Actual value should not be NULL");
+            actual.PlaceId.HasValue.Should().BeTrue("Place id should be assigned");
         }
 
         [TestMethod()]
@@ -63,6 +64,7 @@ namespace WimdioApiProxy.v2.Tests
             actual.Should().NotBeNull("Actual value should not be NULL");
             actual.Id.Should().Be(expected.Id, "Unexpected id");
             actual.Name.Should().Be(expected.Name, "Unexpected name");
+            actual.PlaceId.HasValue.Should().BeTrue("Place id should be assigned");
         }
 
         [TestMethod()]
@@ -84,6 +86,7 @@ namespace WimdioApiProxy.v2.Tests
             actual.Should().NotBeNull("Actual value should not be NULL");
             actual.Name.Should().NotBe(expected.Name, "Unexpected name");
             actual.Username.Should().Be(expected.Username, "Unexpected username");
+            actual.PlaceId.HasValue.Should().BeTrue("Place id should be assigned");
         }
 
         [TestMethod()]
