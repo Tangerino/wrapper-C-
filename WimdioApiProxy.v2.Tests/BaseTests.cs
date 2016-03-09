@@ -219,5 +219,40 @@ namespace WimdioApiProxy.v2.Tests
 
             return created;
         }
+
+        internal static SensorData CreateSensorData()
+        {
+            var data = new SensorData
+            {
+                Series = new List<SensorSerieWrapper>
+                {
+                    new SensorSerieWrapper
+                    {
+                        Serie = new SensorSerie
+                        {
+                            RemoteId = "Remoteid1",
+                        }
+                    },
+                    new SensorSerieWrapper
+                    {
+                        Serie = new SensorSerie
+                        {
+                            RemoteId = "Remoteid2",
+                        }
+                    },
+                }
+            };
+
+            var now = DateTime.Now;
+            now = now.AddMilliseconds(-now.Millisecond);
+
+            data.Series[0].Serie.AddValue(now.AddSeconds(0), 123.45m);
+            data.Series[0].Serie.AddValue(now.AddSeconds(1), 125.65m);
+
+            data.Series[1].Serie.AddValue(now.AddSeconds(0), 567.89m);
+            data.Series[1].Serie.AddValue(now.AddSeconds(1), 587.32m);
+
+            return data;
+        }
     }
 }

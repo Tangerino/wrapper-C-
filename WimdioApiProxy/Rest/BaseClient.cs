@@ -112,7 +112,9 @@ namespace WimdioApiProxy.v2.Rest
 
                     if (!string.IsNullOrWhiteSpace(responseString))
                     {
-                        var errorResult = Serializer.Deserialize<ErrorResponse>(responseString);
+                        var errorResult = errorResponse.ContentType.EndsWith("json")
+                                        ? Serializer.Deserialize<ErrorResponse>(responseString)
+                                        : null;
 
                         log.Error($"RESTful '{method}' {verb.ToString().ToUpper()} failed with code: '{(int)errorResponse.StatusCode}', message: '{errorResult?.Error ?? errorResult?.Status ?? "NULL"}'", we);
                         throw;

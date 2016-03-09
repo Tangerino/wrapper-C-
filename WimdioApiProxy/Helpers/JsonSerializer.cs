@@ -7,6 +7,8 @@ namespace WimdioApiProxy.v2.Helpers
         private JsonSerializerSettings settings => new JsonSerializerSettings
         {
             TypeNameHandling = TypeNameHandling.Auto,
+            DateFormatString = "yyyy-MM-ddTHH:mm:ss",
+            NullValueHandling = NullValueHandling.Include,
         };
 
         public T Deserialize<T>(string input) where T : class

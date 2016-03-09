@@ -714,21 +714,101 @@ namespace WimdioApiProxy.v2
                 throw new WimdioApiClientException(ex.Message, ex);
             }
         }
-        public async Task SensorAddData(string devkey, string remoteId, IEnumerable<Serie> series)
+        public async Task SensorAddData(string devkey, string remoteId, SensorData data)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+                client.AddCustomHeader(nameof(devkey), devkey);
+
+                await client.Post<BasicResponse>($"sensor/data", data, new Dictionary<string, string> { { nameof(remoteId), remoteId } });
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"SensorAddData(devkey={devkey}, remoteId={remoteId}, data={JsonConvert.SerializeObject(data)}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
         }
-        public async Task SensorsAddData(string devkey, string remoteId, IEnumerable<Serie> series)
+        public async Task SensorsAddData(string devkey, string remoteId, IEnumerable<SensorSerie> data)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+                client.AddCustomHeader(nameof(devkey), devkey);
+
+                await client.Post<BasicResponse>($"sensor/data", data, new Dictionary<string, string> { { nameof(remoteId), remoteId } });
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"SensorsAddData(devkey={devkey}, remoteId={remoteId}, data={JsonConvert.SerializeObject(data)}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
         }
         public async Task<Rule> ReadSensorRule(Guid sensorId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return (await client.Get<Rule[]>($"sensor/rule/{sensorId}"))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"ReadSensorRule(sensorId={sensorId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
         }
         public async Task<Rule> UpdateSensorRule(Guid sensorId, UpdateRule rule)
         {
             throw new NotImplementedException();
+        }
+        public async Task<IEnumerable<Sensor>> ListSensors(Guid thingId)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return await client.Get<Sensor[]>($"thing/{thingId}/sensors");
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"ListSensors(thingId={thingId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task LinkSensor(Guid thingId, Guid sensorId)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                await client.Post<BasicResponse>($"thing/{thingId}/link/{sensorId}", new EmptyObject());
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"LinkSensor(thingId={thingId}, sensorId={sensorId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task UnlinkSensor(Guid thingId, Guid sensorId)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                await client.Delete<BasicResponse>($"thing/{thingId}/link/{sensorId}");
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"UnlinkSensor(thingId={thingId}, sensorId={sensorId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
         }
 
         public async Task<IEnumerable<Formula>> ReadFormulas()

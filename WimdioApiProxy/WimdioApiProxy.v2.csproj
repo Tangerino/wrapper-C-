@@ -77,8 +77,7 @@
     <Compile Include="DataTransferObjects\Sensors\Sensor.cs" />
     <Compile Include="DataTransferObjects\Sensors\UpdateRule.cs" />
     <Compile Include="DataTransferObjects\Sensors\UpdateSensor.cs" />
-    <Compile Include="DataTransferObjects\Sensors\Serie.cs" />
-    <Compile Include="DataTransferObjects\Sensors\Variable.cs" />
+    <Compile Include="DataTransferObjects\Sensors\Series.cs" />
     <Compile Include="DataTransferObjects\Things\NewThing.cs" />
     <Compile Include="DataTransferObjects\Places\NewPlace.cs" />
     <Compile Include="DataTransferObjects\NormalizationFactors\NormalizationFactor.cs" />
@@ -106,10 +105,9 @@
     <Compile Include="WimdioApiClientException.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="DataTransferObjects\RemoteSensors\" />
+    <Folder Include="DataTransferObjects\Calendars\" />
     <Folder Include="DataTransferObjects\ShadowDevice\" />
     <Folder Include="DataTransferObjects\TimeSeries\" />
-    <Folder Include="DataTransferObjects\VirtualSensor\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
