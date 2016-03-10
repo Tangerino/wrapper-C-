@@ -144,13 +144,14 @@ namespace WimdioApiProxy.v2.Tests
             return created;
         }
 
-        internal static async Task<Sensor> CreateSensor(IWimdioApiClient client, Device device, IDictionary<string, Sensor> SensorsCreated)
+        internal static async Task<Sensor> CreateSensor(IWimdioApiClient client, Device device, List<KeyValuePair<string, Sensor>> SensorsCreated)
         {
-            var random = Guid.NewGuid().ToString().Split('-').First();
+            var guid = Guid.NewGuid();
+            var random = guid.ToString().Split('-').First();
 
             var newSensor = new NewSensor
             {
-                RemoteId = random,
+                RemoteId = guid,
                 Name = $"Name {random}",
                 Description = $"Description {random}",
                 Unit = "ppm",
@@ -158,7 +159,7 @@ namespace WimdioApiProxy.v2.Tests
             };
 
             var sensor = await client.CreateSensor(device.DevKey, newSensor);
-            SensorsCreated?.Add(device.DevKey, sensor);
+            SensorsCreated?.Add(new KeyValuePair<string, Sensor> (device.DevKey, sensor));
 
             return sensor;
         }
@@ -220,37 +221,22 @@ namespace WimdioApiProxy.v2.Tests
             return created;
         }
 
-        internal static SensorData CreateSensorData()
+        internal static SensorData CreateSensorData(IEnumerable<Guid> remoteIds)
         {
             var data = new SensorData
             {
-                Series = new List<SensorSerieWrapper>
-                {
-                    new SensorSerieWrapper
-                    {
-                        Serie = new SensorSerie
-                        {
-                            RemoteId = "Remoteid1",
-                        }
-                    },
-                    new SensorSerieWrapper
-                    {
-                        Serie = new SensorSerie
-                        {
-                            RemoteId = "Remoteid2",
-                        }
-                    },
-                }
+                Series = remoteIds.Select(x => new SensorSerieWrapper { Serie = new SensorSerie { RemoteId = x } }).ToList()
             };
 
             var now = DateTime.Now;
             now = now.AddMilliseconds(-now.Millisecond);
+            var rnd = new Random();
 
-            data.Series[0].Serie.AddValue(now.AddSeconds(0), 123.45m);
-            data.Series[0].Serie.AddValue(now.AddSeconds(1), 125.65m);
-
-            data.Series[1].Serie.AddValue(now.AddSeconds(0), 567.89m);
-            data.Series[1].Serie.AddValue(now.AddSeconds(1), 587.32m);
+            data.Series.ForEach(x => 
+            {
+                x.Serie.AddValue(now.AddSeconds(0), Math.Round(rnd.NextDouble() * 100, 2));
+                x.Serie.AddValue(now.AddSeconds(1), Math.Round(rnd.NextDouble() * 100, 2));
+            });
 
             return data;
         }

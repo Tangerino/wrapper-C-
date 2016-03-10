@@ -682,7 +682,7 @@ namespace WimdioApiProxy.v2
                 throw new WimdioApiClientException(ex.Message, ex);
             }
         }
-        public async Task<Sensor> UpdateSensor(string devkey, string remoteId, UpdateSensor sensor)
+        public async Task<Sensor> UpdateSensor(string devkey, Guid remoteId, UpdateSensor sensor)
         {
             try
             {
@@ -698,7 +698,7 @@ namespace WimdioApiProxy.v2
                 throw new WimdioApiClientException(ex.Message, ex);
             }
         }
-        public async Task DeleteSensor(string devkey, string remoteId)
+        public async Task DeleteSensor(string devkey, Guid remoteId)
         {
             try
             {
@@ -714,34 +714,18 @@ namespace WimdioApiProxy.v2
                 throw new WimdioApiClientException(ex.Message, ex);
             }
         }
-        public async Task SensorAddData(string devkey, string remoteId, SensorData data)
+        public async Task SensorAddData(string devkey, SensorData data)
         {
             try
             {
                 var client = new ApiRequestClient(_baseUrl, _apiKey);
                 client.AddCustomHeader(nameof(devkey), devkey);
 
-                await client.Post<BasicResponse>($"sensor/data", data, new Dictionary<string, string> { { nameof(remoteId), remoteId } });
+                await client.Post<BasicResponse>($"sensor/data", data);
             }
             catch (Exception ex)
             {
-                _log.Error($"SensorAddData(devkey={devkey}, remoteId={remoteId}, data={JsonConvert.SerializeObject(data)}) failed", ex);
-
-                throw new WimdioApiClientException(ex.Message, ex);
-            }
-        }
-        public async Task SensorsAddData(string devkey, string remoteId, IEnumerable<SensorSerie> data)
-        {
-            try
-            {
-                var client = new ApiRequestClient(_baseUrl, _apiKey);
-                client.AddCustomHeader(nameof(devkey), devkey);
-
-                await client.Post<BasicResponse>($"sensor/data", data, new Dictionary<string, string> { { nameof(remoteId), remoteId } });
-            }
-            catch (Exception ex)
-            {
-                _log.Error($"SensorsAddData(devkey={devkey}, remoteId={remoteId}, data={JsonConvert.SerializeObject(data)}) failed", ex);
+                _log.Error($"SensorAddData(devkey={devkey}, data={JsonConvert.SerializeObject(data)}) failed", ex);
 
                 throw new WimdioApiClientException(ex.Message, ex);
             }
@@ -752,7 +736,7 @@ namespace WimdioApiProxy.v2
             {
                 var client = new ApiRequestClient(_baseUrl, _apiKey);
 
-                return (await client.Get<Rule[]>($"sensor/rule/{sensorId}"))?.FirstOrDefault();
+                return (await client.Get<Rule[]>($"sensor/{sensorId}/rule"))?.FirstOrDefault();
             }
             catch (Exception ex)
             {
@@ -763,7 +747,18 @@ namespace WimdioApiProxy.v2
         }
         public async Task<Rule> UpdateSensorRule(Guid sensorId, UpdateRule rule)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return (await client.Put<Rule[]>($"sensor/{sensorId}/rule", rule))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"UpdateSensorRule(sensorId={sensorId}, rule={JsonConvert.SerializeObject(rule)}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
         }
         public async Task<IEnumerable<Sensor>> ListSensors(Guid thingId)
         {
@@ -806,6 +801,66 @@ namespace WimdioApiProxy.v2
             catch (Exception ex)
             {
                 _log.Error($"UnlinkSensor(thingId={thingId}, sensorId={sensorId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<IEnumerable<SensorVariable>> ReadVirtualSensorVariables(Guid sensorId)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return await client.Get<SensorVariable[]>($"virtual/{sensorId}");
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"ReadVirtualSensorVariables(sensorId={sensorId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task AddVirtualSensorVariables(Guid sensorId, IEnumerable<SensorVariable> variables)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                await client.Post<SensorVariable[]>($"virtual/{sensorId}/link", variables);
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"AddVirtualSensorVariables(sensorId={sensorId}, variables={JsonConvert.SerializeObject(variables)}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task DeleteVirtualSensorVariables(Guid virtualSensorId, Guid virtualVariableId)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                await client.Delete<BasicResponse>($"virtual/{virtualSensorId}/link/{virtualVariableId}");
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"DeleteVirtualSensorVariables(virtualSensorId={virtualSensorId}, virtualVariableId={virtualVariableId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<IEnumerable<Sensor>> ReadVirtualSensors(Guid deviceId)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return await client.Get<Sensor[]>($"device/{deviceId}/virtualsensors");
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"ReadVirtualSensors(deviceId={deviceId}) failed", ex);
 
                 throw new WimdioApiClientException(ex.Message, ex);
             }

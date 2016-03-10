@@ -15,7 +15,7 @@ namespace WimdioApiProxy.v2.Tests
     [TestClass()]
     public class SensorsTests : BaseTests
     {
-        protected IDictionary<string, Sensor> SensorsCreated = new Dictionary<string, Sensor>();
+        protected List<KeyValuePair<string, Sensor>> SensorsCreated = new List<KeyValuePair<string, Sensor>>();
         protected List<Thing> ThingsCreated = new List<Thing>();
         protected List<Place> PlacesCreated = new List<Place>();
         protected List<Device> DevicesCreated = new List<Device>();
@@ -109,7 +109,7 @@ namespace WimdioApiProxy.v2.Tests
         [TestMethod()]
         public void SerializeSensorData_Positive()
         {
-            var expected = CreateSensorData();
+            var expected = CreateSensorData(new[] { Guid.NewGuid(), Guid.NewGuid() });
             SensorData actual = null;
             var serializer = new JsonSerializer();
             Action act = () => 
@@ -119,7 +119,6 @@ namespace WimdioApiProxy.v2.Tests
             };
             act.ShouldNotThrow();
             actual.Should().NotBeNull();
-            actual.Series?.FirstOrDefault()?.Serie?.RemoteId.Should().NotBeNullOrEmpty();
             actual.Series?.FirstOrDefault()?.Serie?.RemoteId.Should().Be(expected.Series.FirstOrDefault().Serie.RemoteId);
             actual.Series?.FirstOrDefault()?.Serie?.Values?.FirstOrDefault()?[0].ToString().Should().Be(expected.Series.FirstOrDefault().Serie.Values.FirstOrDefault()[0].ToString());
             actual.Series?.FirstOrDefault()?.Serie?.Values?.FirstOrDefault()?[1].ToString().Should().Be(expected.Series.FirstOrDefault().Serie.Values.FirstOrDefault()[1].ToString());
@@ -131,22 +130,10 @@ namespace WimdioApiProxy.v2.Tests
             Func<Task> asyncFunction = async () =>
             {
                 var device = await CreateDevice(Client, DevicesCreated);
-                var sensor = await CreateSensor(Client, device, SensorsCreated);
-                var data = CreateSensorData();
-                await Client.SensorAddData(device.DevKey, sensor.RemoteId, data);
-            };
-            asyncFunction.ShouldNotThrow("Method should not throw");
-        }
-
-        [TestMethod()]
-        public void SensorsAddData_Positive()
-        {
-            Func<Task> asyncFunction = async () =>
-            {
-                var device = await CreateDevice(Client, DevicesCreated);
-                var sensor = await CreateSensor(Client, device, SensorsCreated);
-                var data = CreateSensorData().Series.Select(x => x.Serie);
-                await Client.SensorsAddData(device.DevKey, sensor.RemoteId, data);
+                var sensor1 = await CreateSensor(Client, device, SensorsCreated);
+                var sensor2 = await CreateSensor(Client, device, SensorsCreated);
+                var data = CreateSensorData(new[] { sensor1.RemoteId, sensor2.RemoteId });
+                await Client.SensorAddData(device.DevKey, data);
             };
             asyncFunction.ShouldNotThrow("Method should not throw");
         }
@@ -174,7 +161,9 @@ namespace WimdioApiProxy.v2.Tests
             {
                 var device = await CreateDevice(Client, DevicesCreated);
                 var sensor = await CreateSensor(Client, device, SensorsCreated);
-                expected = new UpdateRule();
+                var rule = await Client.ReadSensorRule(sensor.Id);
+                expected = new UpdateRule(rule);
+                expected.Description = "UpdateSensorRule";
                 actual = await Client.UpdateSensorRule(sensor.Id, expected);
             };
             asyncFunction.ShouldNotThrow("Method should not throw");
@@ -202,5 +191,66 @@ namespace WimdioApiProxy.v2.Tests
             actual.First().Id.Should().Be(expected.Id);
         }
 
+        [TestMethod()]
+        public void ReadVirtualSensorVariables_Positive()
+        {
+            IEnumerable<SensorVariable> actual = null;
+            Func<Task> asyncFunction = async () =>
+            {
+                var device = await CreateDevice(Client, DevicesCreated);
+                var sensor = await CreateSensor(Client, device, SensorsCreated);
+                actual = await Client.ReadVirtualSensorVariables(sensor.Id);
+            };
+            asyncFunction.ShouldNotThrow("Method should not throw");
+            actual.Should().NotBeNull();
+        }
+
+        [TestMethod()]
+        public void AddVirtualSensorVariables_Positive()
+        {
+            List<SensorVariable> expected = null; ;
+            IEnumerable<SensorVariable> actual = null;
+            Func<Task> asyncFunction = async () =>
+            {
+                var device = await CreateDevice(Client, DevicesCreated);
+                var virtualSensor = await CreateSensor(Client, device, SensorsCreated);
+                expected = new List<SensorVariable> { new SensorVariable { Id = Guid.NewGuid(), Variable = "Dummy" } };
+                await Client.AddVirtualSensorVariables(virtualSensor.RemoteId, expected);
+                actual = await Client.ReadVirtualSensorVariables(virtualSensor.Id);
+            };
+            asyncFunction.ShouldNotThrow("Method should not throw");
+            actual.Should().NotBeNullOrEmpty();
+            actual.First().Id.Should().Be(expected.First().Id);
+            actual.First().Variable.Should().Be(expected.First().Variable);
+        }
+
+        [TestMethod()]
+        public void DeleteVirtualSensorVariables_Positive()
+        {
+            IEnumerable<SensorVariable> actual = null;
+            Func<Task> asyncFunction = async () =>
+            {
+                var device = await CreateDevice(Client, DevicesCreated);
+                var sensor = await CreateSensor(Client, device, SensorsCreated);
+                actual = await Client.ReadVirtualSensorVariables(sensor.Id);
+            };
+            asyncFunction.ShouldNotThrow("Method should not throw");
+            actual.Should().NotBeNull();
+        }
+
+        [TestMethod()]
+        public void ReadVirtualSensors_Positive()
+        {
+            IEnumerable<Sensor> actual = null;
+            Sensor expected = null;
+            Func<Task> asyncFunction = async () =>
+            {
+                var device = await CreateDevice(Client, DevicesCreated);
+                expected = await CreateSensor(Client, device, SensorsCreated);
+                actual = await Client.ReadVirtualSensors(device.Id);
+            };
+            asyncFunction.ShouldNotThrow("Method should not throw");
+            actual.Should().NotBeNullOrEmpty();
+        }
     }
 }
