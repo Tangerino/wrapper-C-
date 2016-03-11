@@ -68,21 +68,18 @@ namespace WimdioApiProxy.v2.Tests
             {
                 var place = await CreatePlace(Client, PlacesCreated);
                 var nf = await CreateNormalizationFactor(Client, place, NormalizationFactorsCreated);
-                actual = await CreateNormalizationFactorValue(Client, nf, NormalizationFactorValuesCreated);
-
-                expected = new NormalizationFactorValue
+                expected = await CreateNormalizationFactorValue(Client, nf, NormalizationFactorValuesCreated);
+                var update = new UpdateNormalizationFactorValue(expected)
                 {
-                    Value = actual.Value + "12345"
+                    Value = expected.Value + "12345"
                 };
-
-                await Client.UpdateNormalizationFactorValue(nf.Id, expected);
-                actual = (await Client.ReadNormalizationFactorValues(nf.Id))?.FirstOrDefault();
+                actual = await Client.UpdateNormalizationFactorValue(nf.Id, update);
             };
 
             asyncFunction.ShouldNotThrow("Method should not throw");
             actual.Should().NotBeNull("Actual value should not be NULL");
             actual.Timestamp.Should().Be(expected.Timestamp, "Unexpected timestamp");
-            actual.Value.Should().Be(expected.Value, "Unexpected value");
+            actual.Value.Should().NotBe(expected.Value, "Unexpected value");
         }
 
         [TestMethod()]
@@ -96,7 +93,7 @@ namespace WimdioApiProxy.v2.Tests
                 var value = await CreateNormalizationFactorValue(Client, nf, null);
 
                 await Client.DeleteNormalizationFactorValue(nf.Id, value.Timestamp);
-                actual = (await Client.ReadNormalizationFactorValues(nf.Id))?.FirstOrDefault();
+                actual = (await Client.ReadNormalizationFactorValues(nf.Id))?.FirstOrDefault(x => x.Equals(value.Timestamp));
             };
 
             asyncFunction.ShouldNotThrow("Method should not throw");

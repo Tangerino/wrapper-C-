@@ -63,22 +63,23 @@ namespace WimdioApiProxy.v2.Tests
         [TestMethod()]
         public void UpdateDevice_Positive()
         {
-            NewDevice expected = null;
+            Device expected = null;
             Device actual = null;
             Func<Task> asyncFunction = async () =>
             {
-                var device = await CreateDevice(Client, DevicesCreated);
-                expected = new NewDevice
+                expected = await CreateDevice(Client, DevicesCreated);
+                var update = new UpdateDevice(expected)
                 {
-                    Name = device.Name + "Updated",
-                    Description = device.Description + "Updated",
+                    Name = expected.Name + "Updated",
+                    Description = expected.Description + "Updated",
                 };
-                actual = await Client.UpdateDevice(device.Id, expected);
+                actual = await Client.UpdateDevice(expected.Id, update);
             };
             asyncFunction.ShouldNotThrow("Method should not throw");
             actual.Should().NotBeNull("Actual value should not be NULL");
-            actual.Name.Should().Be(expected.Name, "Unexpected name");
-            actual.Description.Should().Be(expected.Description, "Unexpected description");
+            actual.Name.Should().NotBe(expected.Name, "Unexpected name");
+            actual.Description.Should().NotBe(expected.Description, "Unexpected description");
+            actual.Mac.Should().Be(expected.Mac, "Unexpected MAC");
         }
 
         [TestMethod()]

@@ -11,6 +11,7 @@ using WimdioApiProxy.v2.DataTransferObjects.Places;
 using WimdioApiProxy.v2.DataTransferObjects.Things;
 using WimdioApiProxy.v2.DataTransferObjects.Users;
 using WimdioApiProxy.v2.DataTransferObjects.DropBox;
+using WimdioApiProxy.v2.DataTransferObjects.Sensors;
 
 namespace WimdioApiProxy.v2.Tests
 {
@@ -104,7 +105,7 @@ namespace WimdioApiProxy.v2.Tests
                 Value = rnd.Next(100000).ToString(),
             };
 
-            await client.CreateNormalizationFactorValue(nf.Id, normalizationFactorValue);
+            normalizationFactorValue = await client.CreateNormalizationFactorValue(nf.Id, normalizationFactorValue);
             normalizationFactorValuesCreated?.Add(nf.Id, normalizationFactorValue);
 
             return normalizationFactorValue;
@@ -134,13 +135,33 @@ namespace WimdioApiProxy.v2.Tests
             {
                 Name = $"Name {random}",
                 Description = $"Description {random}",
-                Mac = random
+                Mac = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 20)
             };
 
             var created = await client.CreateDevice(device);
             devicesCreated?.Add(created);
 
             return created;
+        }
+
+        internal static async Task<Sensor> CreateSensor(IWimdioApiClient client, Device device, List<KeyValuePair<string, Sensor>> SensorsCreated)
+        {
+            var guid = Guid.NewGuid();
+            var random = guid.ToString().Split('-').First();
+
+            var newSensor = new NewSensor
+            {
+                RemoteId = guid.ToString(),
+                Name = $"Name {random}",
+                Description = $"Description {random}",
+                Unit = "ppm",
+                Tseoi = 0
+            };
+
+            var sensor = await client.CreateSensor(device.DevKey, newSensor);
+            SensorsCreated?.Add(new KeyValuePair<string, Sensor> (device.DevKey, sensor));
+
+            return sensor;
         }
 
         internal static async Task<Formula> CreateFormula(IWimdioApiClient client, List<Formula> formulasCreated)
@@ -198,6 +219,26 @@ namespace WimdioApiProxy.v2.Tests
             etlsCreated?.Add(created);
 
             return created;
+        }
+
+        internal static SensorData CreateSensorData(IEnumerable<string> remoteIds)
+        {
+            var data = new SensorData
+            {
+                Series = remoteIds.Select(x => new SensorSerieWrapper { Serie = new SensorSerie { RemoteId = x } }).ToList()
+            };
+
+            var now = DateTime.Now;
+            now = now.AddMilliseconds(-now.Millisecond);
+            var rnd = new Random();
+
+            data.Series.ForEach(x => 
+            {
+                x.Serie.AddValue(now.AddSeconds(0), Math.Round(rnd.NextDouble() * 100, 2));
+                x.Serie.AddValue(now.AddSeconds(1), Math.Round(rnd.NextDouble() * 100, 2));
+            });
+
+            return data;
         }
     }
 }

@@ -10,6 +10,7 @@ using WimdioApiProxy.v2.DataTransferObjects.Places;
 using WimdioApiProxy.v2.DataTransferObjects.Things;
 using WimdioApiProxy.v2.DataTransferObjects.Users;
 using WimdioApiProxy.v2.DataTransferObjects.DropBox;
+using WimdioApiProxy.v2.DataTransferObjects.Sensors;
 
 namespace WimdioApiProxy.v2
 {
@@ -33,7 +34,7 @@ namespace WimdioApiProxy.v2
         Task<IEnumerable<Place>> ReadPlaces();
         Task<Place> CreatePlace(NewPlace place);
         Task<Place> ReadPlace(Guid placeId);
-        Task<Place> UpdatePlace(Guid placeId, NewPlace place);
+        Task<Place> UpdatePlace(Guid placeId, UpdatePlace place);
         Task DeletePlace(Guid placeId);
         Task LinkPlace(Guid placeId, Guid userId);
         Task UnlinkPlace(Guid placeId, Guid userId);
@@ -41,31 +42,47 @@ namespace WimdioApiProxy.v2
         Task<IEnumerable<NormalizationFactor>> ReadNormalizationFactors(Guid placeId);
         Task<NormalizationFactor> CreateNormalizationFactor(Guid placeId, NewNormalizationFactor normalizationFactor);
         Task<NormalizationFactor> ReadNormalizationFactor(Guid normalizationFactorId);
-        Task<NormalizationFactor> UpdateNormalizationFactor(Guid normalizationFactorId, NewNormalizationFactor normalizationFactor);
+        Task<NormalizationFactor> UpdateNormalizationFactor(Guid normalizationFactorId, UpdateNormalizationFactor normalizationFactor);
         Task DeleteNormalizationFactor(Guid normalizationFactorId);
 
         Task<IEnumerable<NormalizationFactorValue>> ReadNormalizationFactorValues(Guid normalizationFactorId);
-        Task CreateNormalizationFactorValue(Guid normalizationFactorId, NormalizationFactorValue normalizationFactorValue);
-        Task UpdateNormalizationFactorValue(Guid normalizationFactorId, NormalizationFactorValue normalizationFactorValue);
+        Task<NormalizationFactorValue> CreateNormalizationFactorValue(Guid normalizationFactorId, NormalizationFactorValue normalizationFactorValue);
+        Task<NormalizationFactorValue> UpdateNormalizationFactorValue(Guid normalizationFactorId, UpdateNormalizationFactorValue normalizationFactorValue);
         Task DeleteNormalizationFactorValue(Guid normalizationFactorId, DateTime date);
 
         Task<IEnumerable<Thing>> ReadThings(Guid placeId);
         Task<Thing> CreateThing(Guid placeId, NewThing thing);
         Task<Thing> ReadThing(Guid thingId);
-        Task<Thing> UpdateThing(Guid thingId, NewThing thing);
+        Task<Thing> UpdateThing(Guid thingId, UpdateThing thing);
         Task DeleteThing(Guid thingId);
 
         Task<IEnumerable<Device>> ReadDevices();
         Task<Device> CreateDevice(NewDevice device);
         Task<Device> ReadDevice(Guid deviceId);
-        Task<Device> UpdateDevice(Guid deviceId, NewDevice device);
+        Task<Device> UpdateDevice(Guid deviceId, UpdateDevice device);
         Task DeleteDevice(Guid deviceId);
+
+        Task<IEnumerable<Sensor>> ReadSensors(Guid deviceId);
+        Task<Sensor> CreateSensor(string devkey, NewSensor device);
+        Task<Sensor> ReadSensor(Guid sensorId);
+        Task<Sensor> UpdateSensor(string devkey, string remoteId, UpdateSensor device);
+        Task DeleteSensor(string devkey, string remoteId);
+        Task SensorAddData (string devkey, SensorData data);
+        Task<Rule> ReadSensorRule(Guid sensorId);
+        Task<Rule> UpdateSensorRule(Guid sensorId, UpdateRule rule);
+        Task<IEnumerable<Sensor>> ListSensors(Guid thingId);
+        Task LinkSensor(Guid thingId, Guid sensorId);
+        Task UnlinkSensor(Guid thingId, Guid sensorId);
+        Task<IEnumerable<SensorVariable>> ReadVirtualSensorVariables(Guid sensorId);
+        Task AddVirtualSensorVariables(Guid sensorId, IEnumerable<SensorVariable> variables);
+        Task DeleteVirtualSensorVariables(Guid virtualSensorId, Guid virtualVariableId);
+        Task<IEnumerable<Sensor>> ReadVirtualSensors(Guid deviceId);
 
         Task<IEnumerable<Formula>> ReadFormulas();
         Task<Formula> CreateFormula(NewFormula formula);
         Task<Formula> ReadFormula(Guid formulaId);
         Task<string> ReadFormulaCode(Guid formulaId);
-        Task<Formula> UpdateFormula(Guid formulaId, NewFormula formula);
+        Task<Formula> UpdateFormula(Guid formulaId, UpdateFormula formula);
         Task DeleteFormula(Guid formulaId);
 
         Task<FileInfo> SendFileToDevice(Guid deviceId, NewFile file);
@@ -77,7 +94,7 @@ namespace WimdioApiProxy.v2
         Task<IEnumerable<Etl>> ReadEtls();
         Task<Etl> CreateEtl(NewEtl etl);
         Task<Etl> ReadEtl(Guid etlId);
-        Task<Etl> UpdateEtl(Guid etlId, NewEtl etl);
+        Task<Etl> UpdateEtl(Guid etlId, UpdateEtl etl);
         Task DeleteEtl(Guid etlId);
     }
 }

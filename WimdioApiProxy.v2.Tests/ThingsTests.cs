@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -69,22 +70,21 @@ namespace WimdioApiProxy.v2.Tests
         [TestMethod()]
         public void UpdateThing_Positive()
         {
-            NewThing expected = null;
+            Thing expected = null;
             Thing actual = null;
             Func<Task> asyncFunction = async () =>
             {
                 var place = await CreatePlace(Client, PlacesCreated);
-                var thing = await CreateThing(Client, place, ThingsCreated);
-                expected = new NewThing
+                expected = await CreateThing(Client, place, ThingsCreated);
+                var update = new UpdateThing(expected)
                 {
-                    Name = thing.Name + "Updated",
-                    Description = thing.Description + "Updated",
+                    Name = expected.Name + "Updated"
                 };
-                actual = await Client.UpdateThing(place.Id, expected);
+                actual = await Client.UpdateThing(expected.Id, update);
             };
             asyncFunction.ShouldNotThrow("Method should not throw");
             actual.Should().NotBeNull("Actual value should not be NULL");
-            actual.Name.Should().Be(expected.Name, "Unexpected name");
+            actual.Name.Should().NotBe(expected.Name, "Unexpected name");
             actual.Description.Should().Be(expected.Description, "Unexpected description");
         }
 
@@ -98,7 +98,7 @@ namespace WimdioApiProxy.v2.Tests
                 actual = await CreateThing(Client, place, ThingsCreated);
 
                 await Client.DeleteThing(actual.Id);
-                actual = await Client.ReadThing(actual.Id);
+                actual = (await Client.ReadThings(place.Id))?.ToList().FirstOrDefault(x => x.Id.Equals(actual.Id));
             };
             asyncFunction.ShouldNotThrow("Method should not throw");
             actual.Should().BeNull("Actual value should be NULL");

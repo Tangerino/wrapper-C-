@@ -63,21 +63,20 @@ namespace WimdioApiProxy.v2.Tests
         [TestMethod()]
         public void UpdatePlace_Positive()
         {
-            NewPlace expected = null;
+            Place expected = null;
             Place actual = null;
             Func<Task> asyncFunction = async () =>
             {
-                var place = await CreatePlace(Client, PlacesCreated);
-                expected = new NewPlace
+                expected = await CreatePlace(Client, PlacesCreated);
+                var updated = new UpdatePlace(expected)
                 {
-                    Name = place.Name + "Updated",
-                    Description = place.Description + "Updated",
+                    Name = expected.Name + "Updated",
                 };
-                actual = await Client.UpdatePlace(place.Id, expected);
+                actual = await Client.UpdatePlace(expected.Id, updated);
             };
             asyncFunction.ShouldNotThrow("Method should not throw");
             actual.Should().NotBeNull("Actual value should not be NULL");
-            actual.Name.Should().Be(expected.Name, "Unexpected name");
+            actual.Name.Should().NotBe(expected.Name, "Unexpected name");
             actual.Description.Should().Be(expected.Description, "Unexpected description");
         }
 

@@ -69,26 +69,26 @@ namespace WimdioApiProxy.v2.Tests
         [TestMethod()]
         public void UpdateNormalizationFactor_Positive()
         {
-            NewNormalizationFactor expected = null;
+            NormalizationFactor expected = null;
             NormalizationFactor actual = null;
             Func<Task> asyncFunction = async () =>
             {
                 var place = await CreatePlace(Client, PlacesCreated);
-                var normalizationFactor = await CreateNormalizationFactor(Client, place, NormalizationFactorsCreated);
-
-                expected = new NewNormalizationFactor
+                expected = await CreateNormalizationFactor(Client, place, NormalizationFactorsCreated);
+                var updated = new UpdateNormalizationFactor(expected)
                 {
-                    Name = normalizationFactor.Name + "Updated",
-                    Description = normalizationFactor.Description + "Updated",
-                    Unit = normalizationFactor.Unit + "Updated"
+                    Name = expected.Name + "Updated",
+                    Aggregation = AggregationType.Sum
                 };
-
-                actual = await Client.UpdateNormalizationFactor(normalizationFactor.Id, expected);
+                actual = await Client.UpdateNormalizationFactor(expected.Id, updated);
             };
             asyncFunction.ShouldNotThrow("Method should not throw");
             actual.Should().NotBeNull("Actual value should not be NULL");
-            actual.Name.Should().Be(expected.Name, "Unexpected name");
+            actual.Name.Should().NotBe(expected.Name, "Unexpected name");
             actual.Description.Should().Be(expected.Description, "Unexpected description");
+            actual.Unit.Should().Be(expected.Unit, "Unexpected unit");
+            actual.Aggregation.Should().NotBe(expected.Aggregation, "Unexpected aggregation");
+            actual.Operation.Should().Be(expected.Operation, "Unexpected operation");
         }
 
         [TestMethod()]

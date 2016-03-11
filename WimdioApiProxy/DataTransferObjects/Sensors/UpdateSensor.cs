@@ -2,10 +2,15 @@
 
 namespace WimdioApiProxy.v2.DataTransferObjects.Sensors
 {
-    public class NewSensor
+    public class UpdateSensor
     {
-        [JsonProperty("remoteid")]
-        public string RemoteId { get; set; }
+        public UpdateSensor(Sensor sensor)
+        {
+            Name = sensor.Name;
+            Description = sensor.Description;
+            Unit = sensor.Unit;
+            Tseoi = sensor.Tseoi;
+        }
 
         [JsonProperty("name")]
         public string Name { get; set; }
