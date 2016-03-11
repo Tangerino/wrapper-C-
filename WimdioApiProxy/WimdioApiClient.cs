@@ -16,6 +16,7 @@ using WimdioApiProxy.v2.DataTransferObjects.Things;
 using WimdioApiProxy.v2.DataTransferObjects.Users;
 using WimdioApiProxy.v2.DataTransferObjects.DropBox;
 using WimdioApiProxy.v2.DataTransferObjects.Sensors;
+using WimdioApiProxy.v2.DataTransferObjects.ShadowDevice;
 
 namespace WimdioApiProxy.v2
 {
@@ -959,6 +960,79 @@ namespace WimdioApiProxy.v2
             catch (Exception ex)
             {
                 _log.Error($"DeleteFormula(formulaId={formulaId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+
+        public async Task CreateDeviceCommands(Guid deviceId, IEnumerable<Command> commands)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+                await client.Post<BasicResponse>($"shadow/{deviceId}", commands);
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"CreateDeviceCommands(deviceId={deviceId}, commands={JsonConvert.SerializeObject(commands)}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<IEnumerable<Command>> ReadDeviceCommands(string devkey, int limit)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+                client.AddCustomHeader(nameof(devkey), devkey);
+                return await client.Get<Command[]>($"commands/{limit}");
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"ReadDeviceCommands(devkey={devkey}, limit={limit}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task AcknowledgeDeviceCommands(string devkey, IEnumerable<CommandState> states)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+                client.AddCustomHeader(nameof(devkey), devkey);
+                await client.Post<BasicResponse>($"commands/ack", states);
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"AcknowledgeDeviceCommands(devkey={devkey}, states={JsonConvert.SerializeObject(states)}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<IEnumerable<Command>> ReadDeviceCommands(Guid deviceId, DateTime startDate, DateTime endDate)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+                return await client.Get<Command[]>($"shadow/{deviceId}/{startDate.ToString("o")}/{endDate.ToString("o")}");
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"CreateDeviceCommands(deviceId={deviceId}, startDate={startDate.ToString("o")}, endDate={endDate.ToString("o")}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task DeleteDeviceCommands(Guid deviceId, Guid commandId)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+                await client.Delete<BasicResponse>($"shadow/{deviceId}/{commandId}");
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"DeleteDeviceCommands(deviceId={deviceId}, commandId={commandId}) failed", ex);
 
                 throw new WimdioApiClientException(ex.Message, ex);
             }
