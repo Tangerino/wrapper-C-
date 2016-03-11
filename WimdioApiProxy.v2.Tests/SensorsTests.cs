@@ -109,7 +109,7 @@ namespace WimdioApiProxy.v2.Tests
         [TestMethod()]
         public void SerializeSensorData_Positive()
         {
-            var expected = CreateSensorData(new[] { Guid.NewGuid(), Guid.NewGuid() });
+            var expected = CreateSensorData(new[] { Guid.NewGuid().ToString(), Guid.NewGuid().ToString() });
             SensorData actual = null;
             var serializer = new JsonSerializer();
             Action act = () => 
@@ -214,8 +214,9 @@ namespace WimdioApiProxy.v2.Tests
             {
                 var device = await CreateDevice(Client, DevicesCreated);
                 var virtualSensor = await CreateSensor(Client, device, SensorsCreated);
-                expected = new List<SensorVariable> { new SensorVariable { Id = Guid.NewGuid(), Variable = "Dummy" } };
-                await Client.AddVirtualSensorVariables(virtualSensor.RemoteId, expected);
+                var sensor1 = await CreateSensor(Client, device, SensorsCreated);
+                expected = new List<SensorVariable> { new SensorVariable { Id = sensor1.RemoteId, Variable = "Dummy" } };
+                await Client.AddVirtualSensorVariables(virtualSensor.Id, expected);
                 actual = await Client.ReadVirtualSensorVariables(virtualSensor.Id);
             };
             asyncFunction.ShouldNotThrow("Method should not throw");

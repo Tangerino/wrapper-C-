@@ -151,7 +151,7 @@ namespace WimdioApiProxy.v2.Tests
 
             var newSensor = new NewSensor
             {
-                RemoteId = guid,
+                RemoteId = guid.ToString(),
                 Name = $"Name {random}",
                 Description = $"Description {random}",
                 Unit = "ppm",
@@ -221,7 +221,7 @@ namespace WimdioApiProxy.v2.Tests
             return created;
         }
 
-        internal static SensorData CreateSensorData(IEnumerable<Guid> remoteIds)
+        internal static SensorData CreateSensorData(IEnumerable<string> remoteIds)
         {
             var data = new SensorData
             {

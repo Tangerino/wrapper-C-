@@ -682,7 +682,7 @@ namespace WimdioApiProxy.v2
                 throw new WimdioApiClientException(ex.Message, ex);
             }
         }
-        public async Task<Sensor> UpdateSensor(string devkey, Guid remoteId, UpdateSensor sensor)
+        public async Task<Sensor> UpdateSensor(string devkey, string remoteId, UpdateSensor sensor)
         {
             try
             {
@@ -698,7 +698,7 @@ namespace WimdioApiProxy.v2
                 throw new WimdioApiClientException(ex.Message, ex);
             }
         }
-        public async Task DeleteSensor(string devkey, Guid remoteId)
+        public async Task DeleteSensor(string devkey, string remoteId)
         {
             try
             {
