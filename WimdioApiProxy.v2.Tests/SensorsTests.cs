@@ -23,7 +23,7 @@ namespace WimdioApiProxy.v2.Tests
         public new void Dispose()
         {
             SensorsCreated.ToList().ForEach(async s => await Client.DeleteSensor(s.Key, s.Value.RemoteId));
-            DevicesCreated.ForEach(async d => await Client.DeleteThing(d.Id));
+            DevicesCreated.ForEach(async d => await Client.DeleteDevice(d.Id));
             base.Dispose();
         }
 

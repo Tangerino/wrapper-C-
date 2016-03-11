@@ -79,6 +79,12 @@
     <Compile Include="DataTransferObjects\Sensors\UpdateSensor.cs" />
     <Compile Include="DataTransferObjects\Sensors\Series.cs" />
     <Compile Include="DataTransferObjects\Sensors\SensorVariable.cs" />
+    <Compile Include="DataTransferObjects\ShadowDevice\Command.cs" />
+    <Compile Include="DataTransferObjects\ShadowDevice\CommandState.cs" />
+    <Compile Include="DataTransferObjects\ShadowDevice\DeviceObject.cs" />
+    <Compile Include="DataTransferObjects\ShadowDevice\ObjectName.cs" />
+    <Compile Include="DataTransferObjects\ShadowDevice\SettingRow.cs" />
+    <Compile Include="DataTransferObjects\ShadowDevice\Settings.cs" />
     <Compile Include="DataTransferObjects\Things\NewThing.cs" />
     <Compile Include="DataTransferObjects\Places\NewPlace.cs" />
     <Compile Include="DataTransferObjects\NormalizationFactors\NormalizationFactor.cs" />
@@ -107,7 +113,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DataTransferObjects\Calendars\" />
-    <Folder Include="DataTransferObjects\ShadowDevice\" />
     <Folder Include="DataTransferObjects\TimeSeries\" />
   </ItemGroup>
   <ItemGroup>
