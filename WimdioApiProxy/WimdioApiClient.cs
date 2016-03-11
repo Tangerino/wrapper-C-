@@ -826,7 +826,7 @@ namespace WimdioApiProxy.v2
             {
                 var client = new ApiRequestClient(_baseUrl, _apiKey);
 
-                await client.Post<SensorVariable[]>($"virtual/{sensorId}/link", variables);
+                await client.Post<BasicResponse>($"virtual/{sensorId}/link", variables);
             }
             catch (Exception ex)
             {
