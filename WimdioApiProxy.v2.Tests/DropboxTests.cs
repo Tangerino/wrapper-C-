@@ -25,7 +25,23 @@ namespace WimdioApiProxy.v2.Tests
         [TestMethod()]
         public void SendFileToDevice_Positive()
         {
-            throw new NotImplementedException("Can not implement method while read files returns an empty array");
+            var expected = new NewFile
+            {
+                Url = new Uri("http://veryshorthistory.com/wp-content/uploads/2015/04/knights-templar.jpg"),
+                Action = FileAction.POST,
+                Type = FileType.GENERIC
+            };
+            FileInfo actual = null;
+            Func<Task> asyncFunction = async () =>
+            {
+                var device = await CreateDevice(Client, DevicesCreated);
+                var file = await Client.SendFileToDevice(device.Id, expected);
+                actual = (await Client.ReadFilesInformation(device.Id, DateTime.Now.AddHours(-1), DateTime.Now.AddHours(1)))?.FirstOrDefault(x => x.Url == expected.Url);
+            };
+            asyncFunction.ShouldNotThrow("Method should not throw");
+            actual.Should().NotBeNull();
+            actual.Action.Should().Be(expected.Action);
+            actual.Type.Should().Be(expected.Type);
         }
 
         [TestMethod()]
