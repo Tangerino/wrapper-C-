@@ -132,8 +132,8 @@ namespace WimdioApiProxy.v2.Tests
                 var device = await CreateDevice(Client, DevicesCreated);
                 var sensor1 = await CreateSensor(Client, device, SensorsCreated);
                 var sensor2 = await CreateSensor(Client, device, SensorsCreated);
-                var data = CreateSensorData(new[] { sensor1.Id.ToString(), sensor2.Id.ToString() });
-                await Client.SensorAddData(device.DevKey, data);
+                var data = CreateSensorData(new[] { sensor1.RemoteId, sensor2.RemoteId });
+                await Client.SensorAddData(device.DevKey, data.Series);
             };
             asyncFunction.ShouldNotThrow("Method should not throw");
         }
