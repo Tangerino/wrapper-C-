@@ -12,92 +12,53 @@ namespace WimdioApiProxy.v2.Tests
     [TestClass()]
     public class NormalizationFactorValuesTests : BaseTests
     {
-        protected List<Place> PlacesCreated = new List<Place>();
-        protected List<NormalizationFactor> NormalizationFactorsCreated = new List<NormalizationFactor>();
-        protected Dictionary<Guid, NormalizationFactorValue> NormalizationFactorValuesCreated = new Dictionary<Guid, NormalizationFactorValue>();
-
-        public new void Dispose()
-        {
-            NormalizationFactorValuesCreated.ToList().ForEach(v => Client.DeleteNormalizationFactorValue(v.Key, v.Value.Timestamp));
-            NormalizationFactorsCreated.ForEach(nf => Client.DeleteNormalizationFactor(nf.Id));
-            PlacesCreated.ForEach(async p => await Client.DeletePlace(p.Id));
-            base.Dispose();
-        }
-
         [TestMethod()]
-        public void ReadNormalizationFactorValues_Positive()
+        public void NormalizationFactorValue_CRUD_Positive()
         {
-            IEnumerable<NormalizationFactorValue> actual = null;
+            // create
+            Place place = null;
+            NormalizationFactor normalizationFactor = null;
+            NormalizationFactorValue normalizationFactorValue = null;
             Func<Task> asyncFunction = async () =>
             {
-                var place = await CreatePlace(Client, PlacesCreated);
-                var nf = await CreateNormalizationFactor(Client, place, NormalizationFactorsCreated);
-                actual = await Client.ReadNormalizationFactorValues(nf.Id);
+                place = await CreatePlace(Client);
+                normalizationFactor = await CreateNormalizationFactor(Client, place);
+                normalizationFactorValue = await CreateNormalizationFactorValue(Client, normalizationFactor);
             };
+            asyncFunction.ShouldNotThrow();
+            normalizationFactorValue.Should().NotBeNull();
 
-            asyncFunction.ShouldNotThrow("Method should not throw");
-            actual.Should().NotBeNull("Actual value should not be NULL");
-            actual.Should().BeEmpty("Actual value should be empty");
-        }
+            // read
+            IEnumerable<NormalizationFactorValue> normalizationFactorValues = null;
+            asyncFunction = async () => normalizationFactorValues = await Client.ReadNormalizationFactorValues(normalizationFactor.Id);
+            asyncFunction.ShouldNotThrow();
+            normalizationFactorValues.Should().NotBeNullOrEmpty();
+            normalizationFactorValues.Any(x => x.Timestamp == normalizationFactorValue.Timestamp && x.Value == normalizationFactorValue.Value).Should().BeTrue();
 
-        [TestMethod()]
-        public void CreateNormalizationFactorValue_Positive()
-        {
-            NormalizationFactorValue expected = null;
-            NormalizationFactorValue actual = null;
-            Func<Task> asyncFunction = async () =>
+            // update
+            var update = new UpdateNormalizationFactorValue(normalizationFactorValue)
             {
-                var place = await CreatePlace(Client, PlacesCreated);
-                var nf = await CreateNormalizationFactor(Client, place, NormalizationFactorsCreated);
-                expected = await CreateNormalizationFactorValue(Client, nf, NormalizationFactorValuesCreated);
-                actual = (await Client.ReadNormalizationFactorValues(nf.Id))?.FirstOrDefault();
+                Value = normalizationFactorValue.Value + "12345"
             };
+            asyncFunction = async () => normalizationFactorValue = await Client.UpdateNormalizationFactorValue(normalizationFactor.Id, update);
+            asyncFunction.ShouldNotThrow();
+            normalizationFactorValue.Should().NotBeNull();
+            normalizationFactorValue.Timestamp.Should().Be(update.Timestamp);
+            normalizationFactorValue.Value.Should().Be(update.Value);
 
-            asyncFunction.ShouldNotThrow("Method should not throw");
-            actual.Should().NotBeNull("Actual value should not be NULL");
-            actual.Timestamp.Should().Be(expected.Timestamp, "Unexpected actual timestamp");
-            actual.Value.Should().Be(expected.Value, "Unexpected actual value");
-        }
-
-        [TestMethod()]
-        public void UpdateNormalizationFactorValue_Positive()
-        {
-            NormalizationFactorValue expected = null;
-            NormalizationFactorValue actual = null;
-            Func<Task> asyncFunction = async () =>
+            // delete
+            asyncFunction = async () => 
             {
-                var place = await CreatePlace(Client, PlacesCreated);
-                var nf = await CreateNormalizationFactor(Client, place, NormalizationFactorsCreated);
-                expected = await CreateNormalizationFactorValue(Client, nf, NormalizationFactorValuesCreated);
-                var update = new UpdateNormalizationFactorValue(expected)
-                {
-                    Value = expected.Value + "12345"
-                };
-                actual = await Client.UpdateNormalizationFactorValue(nf.Id, update);
+                await Client.DeleteNormalizationFactorValue(normalizationFactor.Id, normalizationFactorValue.Timestamp);
+                await Client.DeleteNormalizationFactor(normalizationFactor.Id);
+                await Client.DeletePlace(place.Id);
             };
+            asyncFunction.ShouldNotThrow();
 
-            asyncFunction.ShouldNotThrow("Method should not throw");
-            actual.Should().NotBeNull("Actual value should not be NULL");
-            actual.Timestamp.Should().Be(expected.Timestamp, "Unexpected timestamp");
-            actual.Value.Should().NotBe(expected.Value, "Unexpected value");
-        }
-
-        [TestMethod()]
-        public void DeleteNormalizationFactorValue_Positive()
-        {
-            NormalizationFactorValue actual = null;
-            Func<Task> asyncFunction = async () =>
-            {
-                var place = await CreatePlace(Client, PlacesCreated);
-                var nf = await CreateNormalizationFactor(Client, place, NormalizationFactorsCreated);
-                var value = await CreateNormalizationFactorValue(Client, nf, null);
-
-                await Client.DeleteNormalizationFactorValue(nf.Id, value.Timestamp);
-                actual = (await Client.ReadNormalizationFactorValues(nf.Id))?.FirstOrDefault(x => x.Equals(value.Timestamp));
-            };
-
-            asyncFunction.ShouldNotThrow("Method should not throw");
-            actual.Should().BeNull("Actual value should be NULL");
+            // read
+            asyncFunction = async () => normalizationFactorValues = await Client.ReadNormalizationFactorValues(normalizationFactor.Id);
+            asyncFunction.ShouldNotThrow();
+            normalizationFactorValues.Should().NotBeNullOrEmpty();
         }
     }
 }

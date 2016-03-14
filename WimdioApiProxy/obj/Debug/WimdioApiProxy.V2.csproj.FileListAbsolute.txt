@@ -11,3 +11,12 @@ D:\Projects\WimdioApiProxy\WimdioApiProxy\bin\Debug\log4net.xml
 D:\Projects\WimdioApiProxy\WimdioApiProxy\bin\Debug\Newtonsoft.Json.xml
 D:\Projects\WimdioApiProxy\WimdioApiProxy\obj\Debug\WimdioApiProxyV2.dll
 D:\Projects\WimdioApiProxy\WimdioApiProxy\obj\Debug\WimdioApiProxyV2.pdb
+D:\GitProjects\wrapper-c-sharp\WimdioApiProxy\bin\Debug\WimdioApiProxyV2.dll
+D:\GitProjects\wrapper-c-sharp\WimdioApiProxy\bin\Debug\WimdioApiProxyV2.pdb
+D:\GitProjects\wrapper-c-sharp\WimdioApiProxy\bin\Debug\log4net.dll
+D:\GitProjects\wrapper-c-sharp\WimdioApiProxy\bin\Debug\Newtonsoft.Json.dll
+D:\GitProjects\wrapper-c-sharp\WimdioApiProxy\bin\Debug\log4net.xml
+D:\GitProjects\wrapper-c-sharp\WimdioApiProxy\bin\Debug\Newtonsoft.Json.xml
+D:\GitProjects\wrapper-c-sharp\WimdioApiProxy\obj\Debug\WimdioApiProxy.v2.csprojResolveAssemblyReference.cache
+D:\GitProjects\wrapper-c-sharp\WimdioApiProxy\obj\Debug\WimdioApiProxyV2.dll
+D:\GitProjects\wrapper-c-sharp\WimdioApiProxy\obj\Debug\WimdioApiProxyV2.pdb

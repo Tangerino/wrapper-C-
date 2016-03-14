@@ -12,96 +12,54 @@ namespace WimdioApiProxy.v2.Tests
     [TestClass()]
     public class ThingsTests : BaseTests
     {
-        protected List<Thing> ThingsCreated = new List<Thing>();
-        protected List<Place> PlacesCreated = new List<Place>();
-
-        public new void Dispose()
-        {
-            PlacesCreated.ForEach(async p => await Client.DeletePlace(p.Id));
-            ThingsCreated.ForEach(async t => await Client.DeleteThing(t.Id));
-            base.Dispose();
-        }
-
         [TestMethod()]
-        public void ReadThings_Positive()
+        public void Thing_CRUD_Positive()
         {
-            IEnumerable<Thing> actual = null;
+            // create
+            Place place = null;
+            Thing thing = null;
             Func<Task> asyncFunction = async () =>
             {
-                var place = await CreatePlace(Client, PlacesCreated);
-                actual = await Client.ReadThings(place.Id);
+                place = await CreatePlace(Client);
+                thing = await CreateThing(Client, place);
             };
-            asyncFunction.ShouldNotThrow("Method should not throw");
-            actual.Should().NotBeNull("Result list should not be NULL");
-        }
+            asyncFunction.ShouldNotThrow();
+            thing.Should().NotBeNull();
 
-        [TestMethod()]
-        public void CreateThing_Positive()
-        {
-            Thing actual = null;
-            Func<Task> asyncFunction = async () =>
+            // read
+            asyncFunction = async () => thing = await Client.ReadThing(thing.Id);
+            asyncFunction.ShouldNotThrow();
+            thing.Should().NotBeNull();
+
+            // read list
+            IEnumerable<Thing> things = null;
+            asyncFunction = async () => things = await Client.ReadThings(place.Id);
+            asyncFunction.ShouldNotThrow();
+            things.Should().NotBeNullOrEmpty();
+            things.Any(x => x.Id == thing.Id).Should().BeTrue();
+
+            // update
+            var update = new UpdateThing(thing)
             {
-                var place = await CreatePlace(Client, PlacesCreated);
-                actual = await CreateThing(Client, place, ThingsCreated);
+                Name = thing.Name + " Updated"
             };
+            asyncFunction = async () => thing = await Client.UpdateThing(thing.Id, update);
+            asyncFunction.ShouldNotThrow();
+            thing.Should().NotBeNull();
+            thing.Name.Should().NotBeNull(update.Name);
 
-            asyncFunction.ShouldNotThrow("Method should not throw");
-            actual.Should().NotBeNull("Actual value should not be NULL");
-        }
+            // delete
+            asyncFunction = async () => await Client.DeleteThing(thing.Id);
+            asyncFunction.ShouldNotThrow();
 
-        [TestMethod()]
-        public void ReadThing_Positive()
-        {
-            Thing expected = null;
-            Thing actual = null;
-            Func<Task> asyncFunction = async () =>
-            {
-                var place = await CreatePlace(Client, PlacesCreated);
-                expected = await CreateThing(Client, place, ThingsCreated);
-                actual = await Client.ReadThing(expected.Id);
-            };
-            asyncFunction.ShouldNotThrow("Method should not throw");
-            actual.Should().NotBeNull("Actual value should not be NULL");
-            actual.Id.Should().Be(expected.Id, "Unexpected id");
-            actual.Name.Should().Be(expected.Name, "Unexpected name");
-            actual.Description.Should().Be(expected.Description, "Unexpected description");
-        }
+            // read list
+            asyncFunction = async () => things = await Client.ReadThings(place.Id);
+            asyncFunction.ShouldNotThrow();
+            things.Should().BeNullOrEmpty();
 
-        [TestMethod()]
-        public void UpdateThing_Positive()
-        {
-            Thing expected = null;
-            Thing actual = null;
-            Func<Task> asyncFunction = async () =>
-            {
-                var place = await CreatePlace(Client, PlacesCreated);
-                expected = await CreateThing(Client, place, ThingsCreated);
-                var update = new UpdateThing(expected)
-                {
-                    Name = expected.Name + "Updated"
-                };
-                actual = await Client.UpdateThing(expected.Id, update);
-            };
-            asyncFunction.ShouldNotThrow("Method should not throw");
-            actual.Should().NotBeNull("Actual value should not be NULL");
-            actual.Name.Should().NotBe(expected.Name, "Unexpected name");
-            actual.Description.Should().Be(expected.Description, "Unexpected description");
-        }
-
-        [TestMethod()]
-        public void DeleteThing_Positive()
-        {
-            Thing actual = null;
-            Func<Task> asyncFunction = async () =>
-            {
-                var place = await CreatePlace(Client, PlacesCreated);
-                actual = await CreateThing(Client, place, ThingsCreated);
-
-                await Client.DeleteThing(actual.Id);
-                actual = (await Client.ReadThings(place.Id))?.ToList().FirstOrDefault(x => x.Id.Equals(actual.Id));
-            };
-            asyncFunction.ShouldNotThrow("Method should not throw");
-            actual.Should().BeNull("Actual value should be NULL");
+            // delete place
+            asyncFunction = async () => await Client.DeletePlace(place.Id);
+            asyncFunction.ShouldNotThrow();
         }
     }
 }
