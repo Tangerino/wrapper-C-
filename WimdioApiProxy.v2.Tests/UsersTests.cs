@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -10,102 +11,53 @@ namespace WimdioApiProxy.v2.Tests
     [TestClass()]
     public class UsersTests : BaseTests
     {
-        protected List<User> UsersCreated = new List<User>();
-
-        public new void Dispose()
-        {
-            UsersCreated.ForEach(async u => await Client.DeletePlace(u.Id));
-            base.Dispose();
-        }
-
         [TestMethod()]
-        public void ReadUses_Positive()
+        public void User_CRUD_Positive()
         {
-            IEnumerable<User> actual = null;
+            // create
+            User user = null;
+            Func<Task> asyncFunction = async () => user = await CreateUser(Client);
+            asyncFunction.ShouldNotThrow();
+            user.Should().NotBeNull();
 
-            Func<Task> asyncFunction = async () =>
+            // read
+            asyncFunction = async () => user = await Client.ReadUser(user.Id);
+            asyncFunction.ShouldNotThrow();
+            user.Should().NotBeNull();
+
+            // read list
+            IEnumerable<User> users = null;
+            asyncFunction = async () => users = await Client.ReadUsers();
+            asyncFunction.ShouldNotThrow();
+            users.Should().NotBeNullOrEmpty();
+            users.Any(x => x.Id == user.Id).Should().BeTrue();
+
+            // update
+            var update = new UpdateUser(user)
             {
-                actual = await Client.ReadUsers();
+                FirstName = user.FirstName + " Updated",
             };
-            asyncFunction.ShouldNotThrow("Method should not throw");
-            actual.Should().NotBeNull("Users list should not be NULL");
-        }
+            asyncFunction = async () => user = await Client.UpdateUser(user.Id, update);
+            asyncFunction.ShouldNotThrow();
+            user.Should().NotBeNull();
+            user.FirstName.Should().Be(update.FirstName);
+            user.LastName.Should().Be(update.LastName);
 
-        [TestMethod()]
-        public void CreateUser_Positive()
-        {
-            User actual = null;
-            Func<Task> asyncFunction = async () =>
-            {
-                actual = await CreateUser(Client, UsersCreated);
-            };
+            // change permissions
+            Permission permissions = Permission.Create | Permission.Update | Permission.Read;
+            asyncFunction = async () => user = await Client.ChangePermissions(user.Id, permissions);
+            asyncFunction.ShouldNotThrow();
+            user.Should().NotBeNull();
+            user.Permissions.Should().Be(permissions);
 
-            asyncFunction.ShouldNotThrow("Method should not throw");
-            actual.Should().NotBeNull("User should not be NULL");
-        }
+            // delete
+            asyncFunction = async () => await Client.DeleteUser(user.Id);
+            asyncFunction.ShouldNotThrow();
 
-        [TestMethod()]
-        public void ReadUser_Positive()
-        {
-            User expected = null;
-            User actual = null;
-            Func<Task> asyncFunction = async () =>
-            {
-                expected = await CreateUser(Client, UsersCreated);
-                actual = await Client.ReadUser(expected.Id);
-            };
-            asyncFunction.ShouldNotThrow("Method should not throw");
-            actual.Should().NotBeNull("User should not be NULL");
-            actual.Id.Should().Be(expected.Id, "Unexpected user id");
-            actual.Email.Should().Be(expected.Email, "Unexpected user email");
-            actual.Permissions.Should().Be(expected.Permissions, "Unexpected user permissions");
-        }
-
-        [TestMethod()]
-        public void UpdateUser_Positive()
-        {
-            User expected = null;
-            User actual = null;
-            Func<Task> asyncFunction = async () =>
-            {
-                expected = await CreateUser(Client, UsersCreated);
-                var update = new UpdateUser(expected)
-                {
-                    FirstName = expected.FirstName + "Updated",
-                };
-                actual = await Client.UpdateUser(expected.Id, update);
-            };
-            asyncFunction.ShouldNotThrow("Method should not throw");
-            actual.Should().NotBeNull("User should not be NULL");
-            actual.FirstName.Should().NotBe(expected.FirstName, "Unexpected user firstname");
-            actual.LastName.Should().Be(expected.LastName, "Unexpected user lastname");
-        }
-
-        [TestMethod()]
-        public void ChangePermissions_Positive()
-        {
-            Permission expected = Permission.Create | Permission.Update | Permission.Read;
-            User actual = null;
-            Func<Task> asyncFunction = async () =>
-            {
-                var user = await CreateUser(Client, UsersCreated);
-
-                actual = await Client.ChangePermissions(user.Id, expected);
-            };
-            asyncFunction.ShouldNotThrow("Method should not throw");
-            actual.Should().NotBeNull("User should not be NULL");
-            actual.Permissions.Should().Be(expected, "Unexpected user permissions");
-        }
-
-        [TestMethod()]
-        public void DeleteUser_Positive()
-        {
-            Func<Task> asyncFunction = async () =>
-            {
-                var user = await CreateUser(Client, UsersCreated);
-                await Client.DeleteUser(user.Id);
-            };
-            asyncFunction.ShouldNotThrow("Method should not throw");
+            // read list
+            asyncFunction = async () => users = await Client.ReadUsers();
+            asyncFunction.ShouldNotThrow();
+            users.Any(x => x.Id == user.Id).Should().BeFalse();
         }
     }
 }

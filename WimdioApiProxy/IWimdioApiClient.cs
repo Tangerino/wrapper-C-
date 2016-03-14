@@ -67,7 +67,7 @@ namespace WimdioApiProxy.v2
         Task<Sensor> ReadSensor(Guid sensorId);
         Task<Sensor> UpdateSensor(string devkey, string remoteId, UpdateSensor device);
         Task DeleteSensor(string devkey, string remoteId);
-        Task SensorAddData (string devkey, IEnumerable<SensorSerieWrapper> data);
+        Task AddSensorData(string devkey, IEnumerable<SensorSerieWrapper> data);
         Task<Rule> ReadSensorRule(Guid sensorId);
         Task<Rule> UpdateSensorRule(Guid sensorId, UpdateRule rule);
         Task<IEnumerable<Sensor>> ListSensors(Guid thingId);
@@ -75,7 +75,7 @@ namespace WimdioApiProxy.v2
         Task UnlinkSensor(Guid thingId, Guid sensorId);
         Task<IEnumerable<SensorVariable>> ReadVirtualSensorVariables(Guid sensorId);
         Task AddVirtualSensorVariables(Guid sensorId, IEnumerable<SensorVariable> variables);
-        Task DeleteVirtualSensorVariables(Guid virtualSensorId, Guid virtualVariableId);
+        Task DeleteVirtualSensorVariables(Guid virtualSensorId, string virtualVariableId);
         Task<IEnumerable<Sensor>> ReadVirtualSensors(Guid deviceId);
 
         Task<IEnumerable<Formula>> ReadFormulas();

@@ -10,14 +10,6 @@ namespace WimdioApiProxy.v2.Tests
     [TestClass()]
     public class DevicesTests : BaseTests
     {
-        protected List<Device> DevicesCreated = new List<Device>();
-
-        public new void Dispose()
-        {
-            DevicesCreated.ForEach(async p => await Client.DeleteDevice(p.Id));
-            base.Dispose();
-        }
-
         [TestMethod()]
         public void ReadDevices_Positive()
         {
@@ -31,67 +23,35 @@ namespace WimdioApiProxy.v2.Tests
         }
 
         [TestMethod()]
-        public void CreateDevice_Positive()
+        public void Device_CRUD_Positive()
         {
-            Device actual = null;
-            Func<Task> asyncFunction = async () =>
-            {
-                actual = await CreateDevice(Client, DevicesCreated);
-            };
+            Device device = null;
+            Func<Task> asyncFunction = async () => device = await CreateDevice(Client);
+            asyncFunction.ShouldNotThrow();
+            device.Should().NotBeNull();
 
-            asyncFunction.ShouldNotThrow("Method should not throw");
-            actual.Should().NotBeNull("Actual value should not be NULL");
-        }
+            asyncFunction = async () => device = await Client.ReadDevice(device.Id);
+            asyncFunction.ShouldNotThrow();
+            device.Should().NotBeNull();
 
-        [TestMethod()]
-        public void ReadDevice_Positive()
-        {
-            Device expected = null;
-            Device actual = null;
-            Func<Task> asyncFunction = async () =>
+            var update = new UpdateDevice(device)
             {
-                expected = await CreateDevice(Client, DevicesCreated);
-                actual = await Client.ReadDevice(expected.Id);
+                Name = device.Name + " Updated",
+                Description = device.Description + " Updated",
             };
-            asyncFunction.ShouldNotThrow("Method should not throw");
-            actual.Should().NotBeNull("Actual value should not be NULL");
-            actual.Id.Should().Be(expected.Id, "Unexpected id");
-            actual.Name.Should().Be(expected.Name, "Unexpected name");
-            actual.Description.Should().Be(expected.Description, "Unexpected description");
-        }
+            asyncFunction = async () => device = await Client.UpdateDevice(device.Id, update);
+            asyncFunction.ShouldNotThrow();
+            device.Should().NotBeNull();
+            device.Name.Should().NotBe(update.Name);
+            device.Description.Should().NotBe(update.Description);
+            device.Mac.Should().Be(update.Mac);
 
-        [TestMethod()]
-        public void UpdateDevice_Positive()
-        {
-            Device expected = null;
-            Device actual = null;
-            Func<Task> asyncFunction = async () =>
-            {
-                expected = await CreateDevice(Client, DevicesCreated);
-                var update = new UpdateDevice(expected)
-                {
-                    Name = expected.Name + "Updated",
-                    Description = expected.Description + "Updated",
-                };
-                actual = await Client.UpdateDevice(expected.Id, update);
-            };
-            asyncFunction.ShouldNotThrow("Method should not throw");
-            actual.Should().NotBeNull("Actual value should not be NULL");
-            actual.Name.Should().NotBe(expected.Name, "Unexpected name");
-            actual.Description.Should().NotBe(expected.Description, "Unexpected description");
-            actual.Mac.Should().Be(expected.Mac, "Unexpected MAC");
-        }
+            asyncFunction = async () => await Client.DeleteDevice(device.Id);
+            asyncFunction.ShouldNotThrow();
 
-        [TestMethod()]
-        public void DeleteDevice_Positive()
-        {
-            Device actual = null;
-            Func<Task> asyncFunction = async () =>
-            {
-                actual = await CreateDevice(Client, DevicesCreated);
-                await Client.DeleteDevice(actual.Id);
-            };
-            asyncFunction.ShouldNotThrow("Method should not throw");
+            asyncFunction = async () => device = await Client.ReadDevice(device.Id);
+            asyncFunction.ShouldNotThrow();
+            device.Should().BeNull();
         }
     }
 }

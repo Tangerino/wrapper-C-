@@ -47,7 +47,9 @@ namespace WimdioApiProxy.v2
             {
                 var client = new ApiRequestClient(_baseUrl, _apiKey);
 
-                var response = await client.Post<BasicResponse>("account/logout", new EmptyObject());
+                await client.Post<BasicResponse>("account/logout", new EmptyObject());
+
+                _apiKey = null;
             }
             catch (Exception ex)
             {
@@ -714,7 +716,7 @@ namespace WimdioApiProxy.v2
                 throw new WimdioApiClientException(ex.Message, ex);
             }
         }
-        public async Task SensorAddData(string devkey, IEnumerable<SensorSerieWrapper> data)
+        public async Task AddSensorData(string devkey, IEnumerable<SensorSerieWrapper> data)
         {
             try
             {
@@ -835,7 +837,7 @@ namespace WimdioApiProxy.v2
                 throw new WimdioApiClientException(ex.Message, ex);
             }
         }
-        public async Task DeleteVirtualSensorVariables(Guid virtualSensorId, Guid virtualVariableId)
+        public async Task DeleteVirtualSensorVariables(Guid virtualSensorId, string virtualVariableId)
         {
             try
             {

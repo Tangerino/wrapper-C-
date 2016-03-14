@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -10,88 +11,48 @@ namespace WimdioApiProxy.v2.Tests
     [TestClass()]
     public class FormulasTests : BaseTests
     {
-        protected List<Formula> FormulasCreated = new List<Formula>();
-
-        public new void Dispose()
-        {
-            FormulasCreated.ForEach(async p => await Client.DeleteFormula(p.Id));
-            base.Dispose();
-        }
-
         [TestMethod()]
-        public void ReadFormulas_Positive()
+        public void Formula_CRUD_Positive()
         {
-            IEnumerable<Formula> actual = null;
-            Func<Task> asyncFunction = async () =>
-            {
-                actual = await Client.ReadFormulas();
-            };
-            asyncFunction.ShouldNotThrow("Method should not throw");
-            actual.Should().NotBeNull("Result list should not be NULL");
-        }
+            // create
+            Formula formula = null;
+            Func<Task> asyncFunction = async () => formula = await CreateFormula(Client);
+            asyncFunction.ShouldNotThrow();
+            formula.Should().NotBeNull();
 
-        [TestMethod()]
-        public void CreateFormula_Positive()
-        {
-            Formula actual = null;
-            Func<Task> asyncFunction = async () =>
-            {
-                actual = await CreateFormula(Client, FormulasCreated);
-            };
-            asyncFunction.ShouldNotThrow("Method should not throw");
-            actual.Should().NotBeNull("Actual value should not be NULL");
-        }
+            // read
+            asyncFunction = async () => formula = await Client.ReadFormula(formula.Id);
+            asyncFunction.ShouldNotThrow();
+            formula.Should().NotBeNull();
 
-        [TestMethod()]
-        public void ReadFormula_Positive()
-        {
-            Formula expected = null;
-            Formula actual = null;
-            Func<Task> asyncFunction = async () =>
-            {
-                expected = await CreateFormula(Client, FormulasCreated);
-                actual = await Client.ReadFormula(expected.Id);
-            };
-            asyncFunction.ShouldNotThrow("Method should not throw");
-            actual.Should().NotBeNull("Actual value should not be NULL");
-            actual.Id.Should().Be(expected.Id, "Unexpected id");
-            actual.Name.Should().Be(expected.Name, "Unexpected name");
-            actual.Code.Should().Be(expected.Code, "Unexpected code");
-            actual.Library.Should().Be(expected.Library, "Unexpected library");
-        }
+            // read list
+            IEnumerable<Formula> formulas = null;
+            asyncFunction = async () => formulas = await Client.ReadFormulas();
+            asyncFunction.ShouldNotThrow();
+            formulas.Should().NotBeNullOrEmpty();
+            formulas.Any(x => x.Id == formula.Id).Should().BeTrue();
 
-        [TestMethod()]
-        public void UpdateFormula_Positive()
-        {
-            Formula expected = null;
-            Formula actual = null;
-            Func<Task> asyncFunction = async () =>
+            // update
+            var update = new UpdateFormula(formula)
             {
-                expected = await CreateFormula(Client, FormulasCreated);
-                var update = new UpdateFormula(expected)
-                {
-                    Name = expected.Name + "Updated",
-                    Code = expected.Code + " * 1",
-                };
-                actual = await Client.UpdateFormula(expected.Id, update);
+                Name = formula.Name + " Updated",
+                Code = formula.Code + " * 1",
             };
-            asyncFunction.ShouldNotThrow("Method should not throw");
-            actual.Should().NotBeNull("Actual value should not be NULL");
-            actual.Name.Should().NotBe(expected.Name, "Unexpected name");
-            actual.Code.Should().NotBe(expected.Code, "Unexpected code");
-            actual.Library.Should().Be(expected.Library, "Unexpected library");
-        }
+            asyncFunction = async () => formula = await Client.UpdateFormula(formula.Id, update);
+            asyncFunction.ShouldNotThrow();
+            formula.Should().NotBeNull();
+            formula.Name.Should().Be(update.Name);
+            formula.Code.Should().Be(update.Code);
+            formula.Library.Should().Be(update.Library);
 
-        [TestMethod()]
-        public void DeleteFormula_Positive()
-        {
-            Formula actual = null;
-            Func<Task> asyncFunction = async () =>
-            {
-                actual = await CreateFormula(Client, FormulasCreated);
-                await Client.DeleteFormula(actual.Id);
-            };
-            asyncFunction.ShouldNotThrow("Method should not throw");
+            // delete
+            asyncFunction = async () => await Client.DeleteFormula(formula.Id);
+            asyncFunction.ShouldNotThrow();
+
+            // read list
+            asyncFunction = async () => formulas = await Client.ReadFormulas();
+            asyncFunction.ShouldNotThrow();
+            formulas.Any(x => x.Id == formula.Id).Should().BeFalse();
         }
     }
 }

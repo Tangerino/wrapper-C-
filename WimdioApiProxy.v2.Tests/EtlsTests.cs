@@ -12,97 +12,56 @@ namespace WimdioApiProxy.v2.Tests
     [TestClass()]
     public class EtlsTests : BaseTests
     {
-        protected List<Etl> EtlsCreated = new List<Etl>();
-        protected List<Place> PlacesCreated = new List<Place>();
-
-        public new void Dispose()
-        {
-            EtlsCreated.ForEach(async t => await Client.DeleteEtl(t.Id));
-            PlacesCreated.ForEach(async p => await Client.DeletePlace(p.Id));
-            base.Dispose();
-        }
-
         [TestMethod()]
-        public void ReadEtls_Positive()
+        public void Etl_CRUD_Positive()
         {
-            IEnumerable<Etl> actual = null;
+            // create
+            Place place = null;
+            Etl etl = null;
             Func<Task> asyncFunction = async () =>
             {
-                actual = await Client.ReadEtls();
+                place = await CreatePlace(Client);
+                etl = await CreateEtl(Client, place);
             };
-            asyncFunction.ShouldNotThrow("Method should not throw");
-            actual.Should().NotBeNull("Result list should not be NULL");
-        }
+            asyncFunction.ShouldNotThrow();
+            etl.Should().NotBeNull();
+            etl.PlaceId.Should().Be(place.Id);
 
-        [TestMethod()]
-        public void CreateEtl_Positive()
-        {
-            Etl actual = null;
-            Func<Task> asyncFunction = async () =>
+            // read
+            asyncFunction = async () => await Client.ReadEtl(etl.Id);
+            etl.Should().NotBeNull();
+            etl.PlaceId.Should().Be(place.Id);
+
+            // real list
+            IEnumerable<Etl> etls = null;
+            asyncFunction = async () => etls = await Client.ReadEtls();
+            asyncFunction.ShouldNotThrow();
+            etls.Should().NotBeNullOrEmpty();
+            etls.Any(x => x.Id == etl.Id).Should().BeTrue();
+
+            // update
+            var update = new UpdateEtl(etl)
             {
-                var place = await CreatePlace(Client, PlacesCreated);
-                actual = await CreateEtl(Client, place, EtlsCreated);
+                Name = etl.Name + " Updated",
             };
+            asyncFunction = async () => etl = await Client.UpdateEtl(etl.Id, update);
+            asyncFunction.ShouldNotThrow();
+            etl.PlaceId.Should().Be(place.Id);
+            etl.Name.Should().Be(update.Name);
+            etl.DatabaseName.Should().Be(update.DatabaseName);
 
-            asyncFunction.ShouldNotThrow("Method should not throw");
-            actual.Should().NotBeNull("Actual value should not be NULL");
-            actual.PlaceId.HasValue.Should().BeTrue("Place id should be assigned");
-        }
-
-        [TestMethod()]
-        public void ReadEtl_Positive()
-        {
-            Etl expected = null;
-            Etl actual = null;
-            Func<Task> asyncFunction = async () =>
+            // delete
+            asyncFunction = async () => 
             {
-                var place = await CreatePlace(Client, PlacesCreated);
-                expected = await CreateEtl(Client, place, EtlsCreated);
-                actual = await Client.ReadEtl(expected.Id);
+                await Client.DeleteEtl(etl.Id);
+                await Client.DeletePlace(place.Id);
             };
-            asyncFunction.ShouldNotThrow("Method should not throw");
-            actual.Should().NotBeNull("Actual value should not be NULL");
-            actual.Id.Should().Be(expected.Id, "Unexpected id");
-            actual.Name.Should().Be(expected.Name, "Unexpected name");
-            actual.PlaceId.HasValue.Should().BeTrue("Place id should be assigned");
-        }
+            asyncFunction.ShouldNotThrow();
 
-        [TestMethod()]
-        public void UpdateEtl_Positive()
-        {
-            Etl expected = null;
-            Etl actual = null;
-            Func<Task> asyncFunction = async () =>
-            {
-                var place = await CreatePlace(Client, PlacesCreated);
-                expected = await CreateEtl(Client, place, EtlsCreated);
-                var update = new UpdateEtl(expected)
-                {
-                    Name = expected.Name + "Updated",
-                };
-                actual = await Client.UpdateEtl(expected.Id, update);
-            };
-            asyncFunction.ShouldNotThrow("Method should not throw");
-            actual.Should().NotBeNull("Actual value should not be NULL");
-            actual.Name.Should().NotBe(expected.Name, "Unexpected name");
-            actual.Username.Should().Be(expected.Username, "Unexpected username");
-            actual.PlaceId.HasValue.Should().BeTrue("Place id should be assigned");
-        }
-
-        [TestMethod()]
-        public void DeleteEtl_Positive()
-        {
-            Etl actual = null;
-            Func<Task> asyncFunction = async () =>
-            {
-                var place = await CreatePlace(Client, PlacesCreated);
-                actual = await CreateEtl(Client, place, EtlsCreated);
-
-                await Client.DeleteEtl(actual.Id);
-                actual = (await Client.ReadEtls()).FirstOrDefault(x => x.Id == actual.Id);
-            };
-            asyncFunction.ShouldNotThrow("Method should not throw");
-            actual.Should().BeNull("Actual value should be NULL");
+            // read list
+            asyncFunction = async () => etls = await Client.ReadEtls();
+            asyncFunction.ShouldNotThrow();
+            etls.Any(x => x.Id == etl.Id).Should().BeFalse();
         }
     }
 }

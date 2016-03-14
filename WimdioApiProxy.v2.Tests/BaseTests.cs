@@ -15,18 +15,18 @@ using WimdioApiProxy.v2.DataTransferObjects.Sensors;
 
 namespace WimdioApiProxy.v2.Tests
 {
-    public abstract class BaseTests : IDisposable
+    public abstract class BaseTests
     {
-        protected readonly IWimdioApiClient Client;
-
-        public BaseTests()
+        private static IWimdioApiClient _client;
+        protected static IWimdioApiClient Client
         {
-            Client = Task.Run(() => GetAuthorizedClient()).Result;
-        }
+            get
+            {
+                if (_client == null)
+                    _client = Task.Run(() => GetAuthorizedClient()).Result;
 
-        public void Dispose()
-        {
-            Client.Logout();
+                return _client;
+            }
         }
 
         protected static readonly Credentials Credentials = new Credentials
@@ -42,7 +42,7 @@ namespace WimdioApiProxy.v2.Tests
             return client;
         }
 
-        internal static async Task<User> CreateUser(IWimdioApiClient client, List<User> usersCreated)
+        internal static async Task<User> CreateUser(IWimdioApiClient client)
         {
             var user = new NewUser
             {
@@ -53,13 +53,10 @@ namespace WimdioApiProxy.v2.Tests
                 Permissions = Permission.Read | Permission.Update
             };
 
-            var created = await client.CreateUser(user);
-            usersCreated?.Add(created);
-
-            return created;
+            return await client.CreateUser(user);
         }
 
-        internal static async Task<Place> CreatePlace(IWimdioApiClient client, List<Place> placesCreated)
+        internal static async Task<Place> CreatePlace(IWimdioApiClient client)
         {
             var random = Guid.NewGuid().ToString().Split('-').First();
 
@@ -69,13 +66,10 @@ namespace WimdioApiProxy.v2.Tests
                 Description = $"Description {random}"
             };
 
-            var created = await client.CreatePlace(place);
-            placesCreated?.Add(created);
-
-            return created;
+            return await client.CreatePlace(place);
         }
 
-        internal static async Task<NormalizationFactor> CreateNormalizationFactor(IWimdioApiClient client, Place place, List<NormalizationFactor> normalizationFactorsCreated)
+        internal static async Task<NormalizationFactor> CreateNormalizationFactor(IWimdioApiClient client, Place place)
         {
             var random = Guid.NewGuid().ToString().Split('-').First();
 
@@ -89,12 +83,11 @@ namespace WimdioApiProxy.v2.Tests
             };
 
             var created = await client.CreateNormalizationFactor(place.Id, normalizationFactor);
-            normalizationFactorsCreated?.Add(created);
 
             return created;
         }
 
-        internal static async Task<NormalizationFactorValue> CreateNormalizationFactorValue(IWimdioApiClient client, NormalizationFactor nf, Dictionary<Guid, NormalizationFactorValue> normalizationFactorValuesCreated)
+        internal static async Task<NormalizationFactorValue> CreateNormalizationFactorValue(IWimdioApiClient client, NormalizationFactor nf)
         {
             var dateTime = DateTime.Now;
             var rnd = new Random();
@@ -105,13 +98,10 @@ namespace WimdioApiProxy.v2.Tests
                 Value = rnd.Next(100000).ToString(),
             };
 
-            normalizationFactorValue = await client.CreateNormalizationFactorValue(nf.Id, normalizationFactorValue);
-            normalizationFactorValuesCreated?.Add(nf.Id, normalizationFactorValue);
-
-            return normalizationFactorValue;
+            return await client.CreateNormalizationFactorValue(nf.Id, normalizationFactorValue);
         }
 
-        internal static async Task<Thing> CreateThing(IWimdioApiClient client, Place place, List<Thing> thingsCreated)
+        internal static async Task<Thing> CreateThing(IWimdioApiClient client, Place place)
         {
             var random = Guid.NewGuid().ToString().Split('-').First();
 
@@ -121,13 +111,10 @@ namespace WimdioApiProxy.v2.Tests
                 Description = "Description " + random
             };
 
-            var created = await client.CreateThing(place.Id, thing);
-            thingsCreated?.Add(created);
-
-            return created;
+            return await client.CreateThing(place.Id, thing);
         }
 
-        internal static async Task<Device> CreateDevice(IWimdioApiClient client, List<Device> devicesCreated)
+        internal static async Task<Device> CreateDevice(IWimdioApiClient client)
         {
             var random = Guid.NewGuid().ToString().Split('-').First();
 
@@ -138,13 +125,10 @@ namespace WimdioApiProxy.v2.Tests
                 Mac = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 20)
             };
 
-            var created = await client.CreateDevice(device);
-            devicesCreated?.Add(created);
-
-            return created;
+            return await client.CreateDevice(device);
         }
 
-        internal static async Task<Sensor> CreateSensor(IWimdioApiClient client, Device device, List<KeyValuePair<string, Sensor>> SensorsCreated)
+        internal static async Task<Sensor> CreateSensor(IWimdioApiClient client, Device device)
         {
             var guid = Guid.NewGuid();
             var random = guid.ToString().Split('-').First();
@@ -158,13 +142,10 @@ namespace WimdioApiProxy.v2.Tests
                 Tseoi = 0
             };
 
-            var sensor = await client.CreateSensor(device.DevKey, newSensor);
-            SensorsCreated?.Add(new KeyValuePair<string, Sensor> (device.DevKey, sensor));
-
-            return sensor;
+            return await client.CreateSensor(device.DevKey, newSensor);
         }
 
-        internal static async Task<Formula> CreateFormula(IWimdioApiClient client, List<Formula> formulasCreated)
+        internal static async Task<Formula> CreateFormula(IWimdioApiClient client)
         {
             var random = Guid.NewGuid().ToString().Split('-').First();
 
@@ -177,12 +158,11 @@ namespace WimdioApiProxy.v2.Tests
 
             var created = await client.CreateFormula(formula);
             created.Code = formula.Code;
-            formulasCreated?.Add(created);
 
             return created;
         }
 
-        internal static async Task<FileInfo> CreateFile(IWimdioApiClient client, Device device, IDictionary<Guid, FileInfo> FilesCreated)
+        internal static async Task<FileInfo> CreateFile(IWimdioApiClient client, Device device)
         {
             var file = new NewFile
             {
@@ -191,15 +171,10 @@ namespace WimdioApiProxy.v2.Tests
                 Type = FileType.FIRMWARE_UPGRADE
             };
 
-            var created = await client.SendFileToDevice(device.Id, file);
-
-            if (created != null)
-                FilesCreated?.Add(device.Id, created);
-
-            return created;
+            return await client.SendFileToDevice(device.Id, file);
         }
 
-        internal static async Task<Etl> CreateEtl(IWimdioApiClient client, Place place, List<Etl> etlsCreated)
+        internal static async Task<Etl> CreateEtl(IWimdioApiClient client, Place place)
         {
             var random = Guid.NewGuid().ToString().Split('-').First();
 
@@ -215,10 +190,7 @@ namespace WimdioApiProxy.v2.Tests
                 TableName = $"Table{random}",
             };
 
-            var created = await client.CreateEtl(etl);
-            etlsCreated?.Add(created);
-
-            return created;
+            return await client.CreateEtl(etl);
         }
 
         internal static SensorData CreateSensorData(IEnumerable<string> remoteIds)
