@@ -54,17 +54,17 @@ namespace WimdioApiProxy.v2.Tests
             normalizationFactor.Unit.Should().Be(updated.Unit);
 
             // delete
-            asyncFunction = async () => 
-            {
-                await Client.DeleteNormalizationFactor(normalizationFactor.Id);
-                await Client.DeletePlace(place.Id);
-            };
+            asyncFunction = async () => await Client.DeleteNormalizationFactor(normalizationFactor.Id);
             asyncFunction.ShouldNotThrow();
 
             // read list
             asyncFunction = async () => normalizationFactors = await Client.ReadNormalizationFactors(place.Id);
             asyncFunction.ShouldNotThrow();
             normalizationFactors.Should().BeNullOrEmpty();
+
+            // delete place
+            asyncFunction = async () => await Client.DeletePlace(place.Id);
+            asyncFunction.ShouldNotThrow();
         }
     }
 }
