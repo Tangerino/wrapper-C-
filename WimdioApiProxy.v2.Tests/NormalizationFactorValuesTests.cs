@@ -47,18 +47,21 @@ namespace WimdioApiProxy.v2.Tests
             normalizationFactorValue.Value.Should().Be(update.Value);
 
             // delete
-            asyncFunction = async () => 
-            {
-                await Client.DeleteNormalizationFactorValue(normalizationFactor.Id, normalizationFactorValue.Timestamp);
-                await Client.DeleteNormalizationFactor(normalizationFactor.Id);
-                await Client.DeletePlace(place.Id);
-            };
+            asyncFunction = async () => await Client.DeleteNormalizationFactorValue(normalizationFactor.Id, normalizationFactorValue.Timestamp);
             asyncFunction.ShouldNotThrow();
 
             // read
             asyncFunction = async () => normalizationFactorValues = await Client.ReadNormalizationFactorValues(normalizationFactor.Id);
             asyncFunction.ShouldNotThrow();
             normalizationFactorValues.Should().NotBeNullOrEmpty();
+
+            // delete normalization factor and place
+            asyncFunction = async () =>
+            {
+                await Client.DeleteNormalizationFactor(normalizationFactor.Id);
+                await Client.DeletePlace(place.Id);
+            };
+            asyncFunction.ShouldNotThrow();
         }
     }
 }
