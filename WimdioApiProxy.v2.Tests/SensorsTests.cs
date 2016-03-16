@@ -124,7 +124,7 @@ namespace WimdioApiProxy.v2.Tests
             Func<Task> asyncFunction = async () =>
             {
                 device = await CreateDevice(Client);
-                sensor = await CreateSensor(Client, device);
+                sensor = await CreateSensor(Client, device, true);
                 sensorVariables = new List<SensorVariable> { new SensorVariable { Id = sensor.Id.ToString(), Variable = "Dummy" } };
                 await Client.AddVirtualSensorVariables(sensor.Id, sensorVariables);
             };

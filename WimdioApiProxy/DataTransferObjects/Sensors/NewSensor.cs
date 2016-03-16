@@ -18,5 +18,8 @@ namespace WimdioApiProxy.v2.DataTransferObjects.Sensors
 
         [JsonProperty("tseoi")]
         public int Tseoi { get; set; }
+
+        [JsonProperty("is_virtual")]
+        public bool IsVirtual { get; set; }
     }
 }
