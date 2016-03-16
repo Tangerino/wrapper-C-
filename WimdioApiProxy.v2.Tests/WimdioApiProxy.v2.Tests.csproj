@@ -72,6 +72,7 @@
     <Compile Include="PlacesTests.cs" />
     <Compile Include="EtlsTests.cs" />
     <Compile Include="SensorsTests.cs" />
+    <Compile Include="ShadowDeviceTests.cs" />
     <Compile Include="ThingsTests.cs" />
     <Compile Include="UsersTests.cs" />
   </ItemGroup>

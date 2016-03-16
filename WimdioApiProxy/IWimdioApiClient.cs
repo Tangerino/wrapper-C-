@@ -11,6 +11,7 @@ using WimdioApiProxy.v2.DataTransferObjects.Things;
 using WimdioApiProxy.v2.DataTransferObjects.Users;
 using WimdioApiProxy.v2.DataTransferObjects.DropBox;
 using WimdioApiProxy.v2.DataTransferObjects.Sensors;
+using WimdioApiProxy.v2.DataTransferObjects.ShadowDevice;
 
 namespace WimdioApiProxy.v2
 {
@@ -84,6 +85,16 @@ namespace WimdioApiProxy.v2
         Task<string> ReadFormulaCode(Guid formulaId);
         Task<Formula> UpdateFormula(Guid formulaId, UpdateFormula formula);
         Task DeleteFormula(Guid formulaId);
+
+        Task CreateDeviceCommands(Guid deviceId, IEnumerable<Command> commands);
+        Task<IEnumerable<Command>> ReadDeviceCommands(string devkey, int limit);
+        Task AcknowledgeDeviceCommands(string devkey, IEnumerable<CommandState> states);
+        Task<IEnumerable<Command>> ReadDeviceCommands(Guid deviceId, DateTime startDate, DateTime endDate);
+        Task DeleteDeviceCommands(Guid deviceId, Guid commandId);
+        //Task SendDeviceSettings(string devkey, Settings settings);
+        //Task SendDeviceSettings(string devkey, IEnumerable<SettingRow> settingRows);
+        //Task<IEnumerable<ObjectName>> ReadDeviceObjects(Guid deviceId);
+        //Task<DeviceObject> ReadDeviceObject(Guid deviceId, string objectName, int objectInitialId, int objectCount);
 
         Task<FileInfo> SendFileToDevice(Guid deviceId, NewFile file);
         Task<IEnumerable<FileInfo>> ReadFilesInformation(Guid deviceId, DateTime startDate, DateTime endDate);
