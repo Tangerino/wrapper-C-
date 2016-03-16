@@ -17,35 +17,26 @@ namespace WimdioApiProxy.v2.Tests
         {
             // create
             Device device = null;
+            Command command = null;
+
             var rnd = new Random();
             var guid = Guid.NewGuid();
-            IEnumerable<Command> commands = new List<Command>
+            var newCommand = new NewCommand
             {
-                new Command
-                {
-                    Id = guid,
-                    Created = DateTime.Now,
-                    ObjectName = $"ObjectName{guid.ToString().Split('-').First()}",
-                    ObjectId = rnd.Next(99),
-                    DueDate = DateTime.Now.AddDays(7)
-                },
-                new Command
-                {
-                    Id = guid,
-                    Created = DateTime.Now,
-                    ObjectName = $"ObjectName{guid.ToString().Split('-').First()}",
-                    ObjectId = rnd.Next(99),
-                    DueDate = DateTime.Now.AddDays(7)
-                },
+                ObjectName = $"ObjectName{guid.ToString().Split('-').First()}",
+                ObjectId = rnd.Next(99),
+                Action = CommandAction.UPDATE,
+                ObjectContent = new ObjectContent { PublishingInterval = rnd.Next(4) }
             };
             Func<Task> asyncFunction = async () => 
             {
                 device = await CreateDevice(Client);
-                await Client.CreateDeviceCommands(device.Id, commands);
+                command = await Client.CreateDeviceCommands(device.Id, newCommand);
             };
             asyncFunction.ShouldNotThrow();
 
             // read list
+            IEnumerable<Command> commands = null;
             var limit = 3;
             asyncFunction = async () => commands = await Client.ReadDeviceCommands(device.DevKey, limit);
             asyncFunction.ShouldNotThrow();

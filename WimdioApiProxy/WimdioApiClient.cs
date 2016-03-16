@@ -965,16 +965,16 @@ namespace WimdioApiProxy.v2
             }
         }
 
-        public async Task CreateDeviceCommands(Guid deviceId, IEnumerable<Command> commands)
+        public async Task<Command> CreateDeviceCommands(Guid deviceId, NewCommand command)
         {
             try
             {
                 var client = new ApiRequestClient(_baseUrl, _apiKey);
-                await client.Post<BasicResponse>($"shadow/{deviceId}", commands);
+                return (await client.Post<Command[]>($"shadow/{deviceId}", command))?.FirstOrDefault();
             }
             catch (Exception ex)
             {
-                _log.Error($"CreateDeviceCommands(deviceId={deviceId}, commands={JsonConvert.SerializeObject(commands)}) failed", ex);
+                _log.Error($"CreateDeviceCommands(deviceId={deviceId}, command={JsonConvert.SerializeObject(command)}) failed", ex);
 
                 throw new WimdioApiClientException(ex.Message, ex);
             }

@@ -86,7 +86,7 @@ namespace WimdioApiProxy.v2
         Task<Formula> UpdateFormula(Guid formulaId, UpdateFormula formula);
         Task DeleteFormula(Guid formulaId);
 
-        Task CreateDeviceCommands(Guid deviceId, IEnumerable<Command> commands);
+        Task<Command> CreateDeviceCommands(Guid deviceId, NewCommand command);
         Task<IEnumerable<Command>> ReadDeviceCommands(string devkey, int limit);
         Task AcknowledgeDeviceCommands(string devkey, IEnumerable<CommandState> states);
         Task<IEnumerable<Command>> ReadDeviceCommands(Guid deviceId, DateTime startDate, DateTime endDate);
