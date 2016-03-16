@@ -492,7 +492,7 @@ namespace WimdioApiProxy.v2
             {
                 var client = new ApiRequestClient(_baseUrl, _apiKey);
 
-                return await client.Get<Thing[]>($"place/{placeId}");
+                return await client.Get<Thing[]>($"place/{placeId}/things");
             }
             catch (Exception ex)
             {
