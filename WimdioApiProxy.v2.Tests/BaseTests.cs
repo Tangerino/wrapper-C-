@@ -128,7 +128,7 @@ namespace WimdioApiProxy.v2.Tests
             return await client.CreateDevice(device);
         }
 
-        internal static async Task<Sensor> CreateSensor(IWimdioApiClient client, Device device)
+        internal static async Task<Sensor> CreateSensor(IWimdioApiClient client, Device device, bool isVirtual = false)
         {
             var guid = Guid.NewGuid();
             var random = guid.ToString().Split('-').First();
@@ -139,7 +139,8 @@ namespace WimdioApiProxy.v2.Tests
                 Name = $"Name {random}",
                 Description = $"Description {random}",
                 Unit = "ppm",
-                Tseoi = 0
+                Tseoi = 0,
+                IsVirtual = isVirtual
             };
 
             return await client.CreateSensor(device.DevKey, newSensor);

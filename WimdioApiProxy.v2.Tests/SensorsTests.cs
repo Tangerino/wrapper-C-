@@ -9,7 +9,6 @@ using WimdioApiProxy.v2.DataTransferObjects.Devices;
 using WimdioApiProxy.v2.Helpers;
 using WimdioApiProxy.v2.DataTransferObjects.Things;
 using WimdioApiProxy.v2.DataTransferObjects.Places;
-using WimdioApiProxy.v2.DataTransferObjects.Formulas;
 
 namespace WimdioApiProxy.v2.Tests
 {
@@ -88,12 +87,32 @@ namespace WimdioApiProxy.v2.Tests
             // update rule
             var updatedRule = new UpdateRule(rule)
             {
-                Description = "UpdateSensorRule"
+                IsEnabled = !rule.IsEnabled,
+                Name = rule.Name + " Updated",
+                Description = rule.Name + " Updated",
+                IsIncremental = !rule.IsIncremental,
+                CheckGap = !rule.CheckGap,
+                LogInterval = !rule.LogInterval,
+                IndexToAbsolute = !rule.IndexToAbsolute,
+                HasMinimumValue = !rule.HasMinimumValue,
+                MinimumValue = rule.MinimumValue - 1,
+                HasMaximumValue = !rule.HasMaximumValue,
+                MaximumValue = rule.MaximumValue + 1
             };
             asyncFunction = async () => rule = await Client.UpdateSensorRule(sensor.Id, updatedRule);
             asyncFunction.ShouldNotThrow();
             rule.Should().NotBeNull();
+            rule.IsEnabled.Should().Be(updatedRule.IsEnabled);
+            rule.Name.Should().Be(updatedRule.Name);
             rule.Description.Should().Be(updatedRule.Description);
+            rule.IsIncremental.Should().Be(updatedRule.IsIncremental);
+            rule.CheckGap.Should().Be(updatedRule.CheckGap);
+            rule.LogInterval.Should().Be(updatedRule.LogInterval);
+            rule.IndexToAbsolute.Should().Be(updatedRule.IndexToAbsolute);
+            rule.HasMinimumValue.Should().Be(updatedRule.HasMinimumValue);
+            rule.MinimumValue.Should().Be(updatedRule.MinimumValue);
+            rule.HasMaximumValue.Should().Be(updatedRule.HasMaximumValue);
+            rule.MaximumValue.Should().Be(updatedRule.MaximumValue);
 
             // delete
             asyncFunction = async () => 
@@ -124,7 +143,7 @@ namespace WimdioApiProxy.v2.Tests
             Func<Task> asyncFunction = async () =>
             {
                 device = await CreateDevice(Client);
-                sensor = await CreateSensor(Client, device);
+                sensor = await CreateSensor(Client, device, true);
                 sensorVariables = new List<SensorVariable> { new SensorVariable { Id = sensor.Id.ToString(), Variable = "Dummy" } };
                 await Client.AddVirtualSensorVariables(sensor.Id, sensorVariables);
             };
