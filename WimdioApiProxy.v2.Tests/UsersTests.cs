@@ -58,6 +58,13 @@ namespace WimdioApiProxy.v2.Tests
             asyncFunction = async () => users = await Client.ReadUsers();
             asyncFunction.ShouldNotThrow();
             users.Any(x => x.Id == user.Id).Should().BeFalse();
+
+            // clean up all test users
+            users.Where(x => x.Email.StartsWith("dummy+")).ToList().ForEach(x => 
+            {
+                asyncFunction = async () => await Client.DeleteUser(x.Id);
+                asyncFunction.ShouldNotThrow();
+            });
         }
     }
 }
