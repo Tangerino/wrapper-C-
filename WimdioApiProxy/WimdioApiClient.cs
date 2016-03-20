@@ -965,16 +965,44 @@ namespace WimdioApiProxy.v2
             }
         }
 
-        public async Task CreateDeviceCommands(Guid deviceId, IEnumerable<Command> commands)
+        public async Task<IEnumerable<ShadowObjectName>> ReadDeviceObjects(Guid deviceId)
         {
             try
             {
                 var client = new ApiRequestClient(_baseUrl, _apiKey);
-                await client.Post<BasicResponse>($"shadow/{deviceId}", commands);
+                return await client.Get<ShadowObjectName[]>($"shadow/{deviceId}/objects");
             }
             catch (Exception ex)
             {
-                _log.Error($"CreateDeviceCommands(deviceId={deviceId}, commands={JsonConvert.SerializeObject(commands)}) failed", ex);
+                _log.Error($"ReadDeviceObjects(deviceId={deviceId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<IEnumerable<ShadowObject>> ReadDeviceObjects(Guid deviceId, string objectName, int objectInitialId = 0, int objectCount = 1)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+                return await client.Get<ShadowObject[]>($"shadow/{deviceId}/object/{objectName}/{objectInitialId}/{objectCount}");
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"ReadDeviceObjects(deviceId={deviceId}, objectName={objectName}, objectInitialId={objectInitialId}, objectCount={objectCount}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<CommandDeatils> CreateDeviceCommand(Guid deviceId, NewCommand command)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+                return (await client.Post<CommandDeatils[]>($"shadow/{deviceId}", command))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"CreateDeviceCommand(deviceId={deviceId}, command={JsonConvert.SerializeObject(command)}) failed", ex);
 
                 throw new WimdioApiClientException(ex.Message, ex);
             }
@@ -1009,12 +1037,12 @@ namespace WimdioApiProxy.v2
                 throw new WimdioApiClientException(ex.Message, ex);
             }
         }
-        public async Task<IEnumerable<Command>> ReadDeviceCommands(Guid deviceId, DateTime startDate, DateTime endDate)
+        public async Task<IEnumerable<CommandDeatils>> ReadDeviceCommands(Guid deviceId, DateTime startDate, DateTime endDate)
         {
             try
             {
                 var client = new ApiRequestClient(_baseUrl, _apiKey);
-                return await client.Get<Command[]>($"shadow/{deviceId}/{startDate.ToString("o")}/{endDate.ToString("o")}");
+                return await client.Get<CommandDeatils[]>($"shadow/{deviceId}/{startDate.ToString("o")}/{endDate.ToString("o")}");
             }
             catch (Exception ex)
             {
@@ -1033,6 +1061,38 @@ namespace WimdioApiProxy.v2
             catch (Exception ex)
             {
                 _log.Error($"DeleteDeviceCommands(deviceId={deviceId}, commandId={commandId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task SendDeviceSettings(string devkey, CommandSettings settings)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+                client.AddCustomHeader(nameof(devkey), devkey);
+
+                await client.Post<BasicResponse>($"settings", settings);
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"SendDeviceSettings(devkey={devkey}, file={JsonConvert.SerializeObject(settings)}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task SendDeviceSettings(string devkey, IEnumerable<ShadowObjectContent> settingRows)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+                client.AddCustomHeader(nameof(devkey), devkey);
+
+                await client.Post<BasicResponse>($"settings", settingRows);
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"SendDeviceSettings(devkey={devkey}, file={JsonConvert.SerializeObject(settingRows)}) failed", ex);
 
                 throw new WimdioApiClientException(ex.Message, ex);
             }

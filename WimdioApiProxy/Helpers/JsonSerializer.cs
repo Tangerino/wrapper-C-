@@ -9,7 +9,7 @@ namespace WimdioApiProxy.v2.Helpers
         {
             TypeNameHandling = TypeNameHandling.Auto,
             DateFormatString = "yyyy-MM-ddTHH:mm:ss",
-            NullValueHandling = NullValueHandling.Include,
+            NullValueHandling = NullValueHandling.Ignore,
         };
 
         public T Deserialize<T>(string input) where T : class
@@ -39,6 +39,28 @@ namespace WimdioApiProxy.v2.Helpers
         public override bool CanConvert(Type objectType)
         {
             return objectType == typeof(bool);
+        }
+    }
+
+    public class StringObjectConverter<T> : JsonConverter where T : class
+    {
+        public override void WriteJson(JsonWriter writer, object value, Newtonsoft.Json.JsonSerializer serializer)
+        {
+            var s = new JsonSerializer();
+            var strValue = s.Serialize(value as T);
+            writer.WriteValue(strValue);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, Newtonsoft.Json.JsonSerializer serializer)
+        {
+            var strValue = reader.Value.ToString();
+            var s = new JsonSerializer();
+            return s.Deserialize<T>(strValue);
+        }
+
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(T);
         }
     }
 }

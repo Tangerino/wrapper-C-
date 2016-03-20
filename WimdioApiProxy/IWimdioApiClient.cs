@@ -86,15 +86,15 @@ namespace WimdioApiProxy.v2
         Task<Formula> UpdateFormula(Guid formulaId, UpdateFormula formula);
         Task DeleteFormula(Guid formulaId);
 
-        Task CreateDeviceCommands(Guid deviceId, IEnumerable<Command> commands);
+        Task<IEnumerable<ShadowObjectName>> ReadDeviceObjects(Guid deviceId);
+        Task<IEnumerable<ShadowObject>> ReadDeviceObjects(Guid deviceId, string objectName, int objectInitialId = 0, int objectCount = 1);
+        Task<CommandDeatils> CreateDeviceCommand(Guid deviceId, NewCommand command);
         Task<IEnumerable<Command>> ReadDeviceCommands(string devkey, int limit);
         Task AcknowledgeDeviceCommands(string devkey, IEnumerable<CommandState> states);
-        Task<IEnumerable<Command>> ReadDeviceCommands(Guid deviceId, DateTime startDate, DateTime endDate);
+        Task<IEnumerable<CommandDeatils>> ReadDeviceCommands(Guid deviceId, DateTime startDate, DateTime endDate);
         Task DeleteDeviceCommands(Guid deviceId, Guid commandId);
-        //Task SendDeviceSettings(string devkey, Settings settings);
-        //Task SendDeviceSettings(string devkey, IEnumerable<SettingRow> settingRows);
-        //Task<IEnumerable<ObjectName>> ReadDeviceObjects(Guid deviceId);
-        //Task<DeviceObject> ReadDeviceObject(Guid deviceId, string objectName, int objectInitialId, int objectCount);
+        Task SendDeviceSettings(string devkey, CommandSettings settings);
+        Task SendDeviceSettings(string devkey, IEnumerable<ShadowObjectContent> settingRows);
 
         Task<FileInfo> SendFileToDevice(Guid deviceId, NewFile file);
         Task<IEnumerable<FileInfo>> ReadFilesInformation(Guid deviceId, DateTime startDate, DateTime endDate);
