@@ -75,8 +75,8 @@ namespace WimdioApiProxy.v2.Tests
             };
             Command command = null;
             asyncFunction = async () => command = await Client.CreateDeviceCommand(device.Id, newCommand);
-            asyncFunction.ShouldNotThrow($"CreateDeviceObject({device.Id}, newCommand) should not throw");
-            command.Should().NotBeNull($"CreateDeviceObject({device.Id}, newCommand) should not return NULL");
+            asyncFunction.ShouldNotThrow($"CreateDeviceCommand({device.Id}, newCommand) should not throw");
+            command.Should().NotBeNull($"CreateDeviceCommand({device.Id}, newCommand) should not return NULL");
             command.ObjectName.Should().Be(shadowObject.ObjectContent.Name);
 
             // Again, I'll update the "timeout" to 60 and add a comment to the new command. This will create a new command
