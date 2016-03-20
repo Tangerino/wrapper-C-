@@ -10,17 +10,14 @@ namespace WimdioApiProxy.v2.DataTransferObjects.ShadowDevice
         public CommandAction Action { get; set; }
 
         [JsonProperty("objectcontent")]
-        public ObjectContent ObjectContent { get; set; }
-    }
-
-    public class ObjectContent
-    {
-        [JsonProperty("publishinginterval")]
-        public int PublishingInterval { get; set; }
+        public ShadowObjectContent ObjectContent { get; set; }
     }
 
     public enum CommandAction
     {
-        UPDATE
+        CREATE,
+        READ,
+        UPDATE,
+        DELETE
     }
 }

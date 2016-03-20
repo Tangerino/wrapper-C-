@@ -12,6 +12,7 @@ using WimdioApiProxy.v2.DataTransferObjects.Things;
 using WimdioApiProxy.v2.DataTransferObjects.Users;
 using WimdioApiProxy.v2.DataTransferObjects.DropBox;
 using WimdioApiProxy.v2.DataTransferObjects.Sensors;
+using WimdioApiProxy.v2.DataTransferObjects.ShadowDevice;
 
 namespace WimdioApiProxy.v2.Tests
 {
@@ -211,6 +212,50 @@ namespace WimdioApiProxy.v2.Tests
             });
 
             return data;
+        }
+
+        internal static CommandSettings CarlosTestSettings()
+        {
+            return new CommandSettings
+            {
+                Settings = "edge",
+                Objects = new List<SettingsObject>
+                {
+                    new SettingsObject
+                    {
+                        Object = "cloudservice",
+                        Rows = new List<ShadowObjectContent>
+                        {
+                            new ShadowObjectContent
+                            {
+                                Id = 20,
+                                Name = "wimd",
+                                Type = 18,
+                                Enabled = true,
+                                Host = 1,
+                                PublishInterval = 1440,
+                                TagPosition = 31310287,
+                                LastRun = DateTime.Parse("2016-03-19 08:46:05"),
+                                NextRun = DateTime.MaxValue,
+                                Status = 200,
+                                Pause = false,
+                                ZipIt = false,
+                                ApiKey = null,
+                                CleanSession = false,
+                                Timeout = 30,
+                                ActivationCode = Guid.Parse("d109a897-d26f-11e5-8d5d-04017fd5d401"),
+                                FeedId = null,
+                                MailTo = null,
+                                MailCc = null,
+                                MailBcc = null,
+                                EventPosition = 0,
+                                AlarmPosition = 0,
+                                ConfigPosition = 2
+                            }
+                        }
+                    }
+                }
+            };
         }
     }
 }

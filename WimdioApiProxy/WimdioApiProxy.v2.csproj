@@ -83,10 +83,10 @@
     <Compile Include="DataTransferObjects\ShadowDevice\NewCommand.cs" />
     <Compile Include="DataTransferObjects\ShadowDevice\Command.cs" />
     <Compile Include="DataTransferObjects\ShadowDevice\CommandState.cs" />
-    <Compile Include="DataTransferObjects\ShadowDevice\DeviceObject.cs" />
-    <Compile Include="DataTransferObjects\ShadowDevice\ObjectName.cs" />
-    <Compile Include="DataTransferObjects\ShadowDevice\SettingRow.cs" />
-    <Compile Include="DataTransferObjects\ShadowDevice\Settings.cs" />
+    <Compile Include="DataTransferObjects\ShadowDevice\ShadowObject.cs" />
+    <Compile Include="DataTransferObjects\ShadowDevice\ShadowObjectName.cs" />
+    <Compile Include="DataTransferObjects\ShadowDevice\ShadowObjectContent.cs" />
+    <Compile Include="DataTransferObjects\ShadowDevice\CommandSettings.cs" />
     <Compile Include="DataTransferObjects\Things\NewThing.cs" />
     <Compile Include="DataTransferObjects\Places\NewPlace.cs" />
     <Compile Include="DataTransferObjects\NormalizationFactors\NormalizationFactor.cs" />

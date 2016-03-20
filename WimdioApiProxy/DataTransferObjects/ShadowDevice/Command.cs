@@ -4,7 +4,7 @@ using Newtonsoft.Json.Converters;
 
 namespace WimdioApiProxy.v2.DataTransferObjects.ShadowDevice
 {
-    public class Command : CommandBase
+    public class Command : NewCommand
     {
         [JsonProperty("id")]
         public Guid Id { get; set; }
@@ -13,8 +13,28 @@ namespace WimdioApiProxy.v2.DataTransferObjects.ShadowDevice
         [JsonConverter(typeof(IsoDateTimeConverter))]
         public DateTime Created { get; set; }
 
+        [JsonProperty("sent")]
+        [JsonConverter(typeof(IsoDateTimeConverter))]
+        public DateTime Sent { get; set; }
+
+        [JsonProperty("acknowledge")]
+        [JsonConverter(typeof(IsoDateTimeConverter))]
+        public DateTime? Acknowledge { get; set; }
+
+        [JsonProperty("status")]
+        public int? Status { get; set; }
+
+        [JsonProperty("createdby")]
+        public Guid CreatedBy { get; set; }
+
         [JsonProperty("duedate")]
         [JsonConverter(typeof(IsoDateTimeConverter))]
         public DateTime DueDate { get; set; }
+
+        [JsonProperty("deleted")]
+        public bool Deleted { get; set; }
+
+        [JsonProperty("deletedby")]
+        public Guid? DeletedBy { get; set; }
     }
 }
