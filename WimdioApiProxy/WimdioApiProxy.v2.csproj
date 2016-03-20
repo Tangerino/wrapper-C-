@@ -79,9 +79,10 @@
     <Compile Include="DataTransferObjects\Sensors\UpdateSensor.cs" />
     <Compile Include="DataTransferObjects\Sensors\Series.cs" />
     <Compile Include="DataTransferObjects\Sensors\SensorVariable.cs" />
+    <Compile Include="DataTransferObjects\ShadowDevice\Command.cs" />
     <Compile Include="DataTransferObjects\ShadowDevice\CommandBase.cs" />
     <Compile Include="DataTransferObjects\ShadowDevice\NewCommand.cs" />
-    <Compile Include="DataTransferObjects\ShadowDevice\Command.cs" />
+    <Compile Include="DataTransferObjects\ShadowDevice\CommandDeatils.cs" />
     <Compile Include="DataTransferObjects\ShadowDevice\CommandState.cs" />
     <Compile Include="DataTransferObjects\ShadowDevice\ShadowObject.cs" />
     <Compile Include="DataTransferObjects\ShadowDevice\ShadowObjectName.cs" />

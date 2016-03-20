@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using WimdioApiProxy.v2.Helpers;
 
 namespace WimdioApiProxy.v2.DataTransferObjects.ShadowDevice
 {
@@ -10,6 +11,7 @@ namespace WimdioApiProxy.v2.DataTransferObjects.ShadowDevice
         public CommandAction Action { get; set; }
 
         [JsonProperty("objectcontent")]
+        [JsonConverter(typeof(StringObjectConverter<ShadowObjectContent>))]
         public ShadowObjectContent ObjectContent { get; set; }
     }
 

@@ -88,10 +88,10 @@ namespace WimdioApiProxy.v2
 
         Task<IEnumerable<ShadowObjectName>> ReadDeviceObjects(Guid deviceId);
         Task<IEnumerable<ShadowObject>> ReadDeviceObjects(Guid deviceId, string objectName, int objectInitialId = 0, int objectCount = 1);
-        Task<Command> CreateDeviceCommand(Guid deviceId, NewCommand command);
+        Task<CommandDeatils> CreateDeviceCommand(Guid deviceId, NewCommand command);
         Task<IEnumerable<Command>> ReadDeviceCommands(string devkey, int limit);
         Task AcknowledgeDeviceCommands(string devkey, IEnumerable<CommandState> states);
-        Task<IEnumerable<Command>> ReadDeviceCommands(Guid deviceId, DateTime startDate, DateTime endDate);
+        Task<IEnumerable<CommandDeatils>> ReadDeviceCommands(Guid deviceId, DateTime startDate, DateTime endDate);
         Task DeleteDeviceCommands(Guid deviceId, Guid commandId);
         Task SendDeviceSettings(string devkey, CommandSettings settings);
         Task SendDeviceSettings(string devkey, IEnumerable<ShadowObjectContent> settingRows);

@@ -993,12 +993,12 @@ namespace WimdioApiProxy.v2
                 throw new WimdioApiClientException(ex.Message, ex);
             }
         }
-        public async Task<Command> CreateDeviceCommand(Guid deviceId, NewCommand command)
+        public async Task<CommandDeatils> CreateDeviceCommand(Guid deviceId, NewCommand command)
         {
             try
             {
                 var client = new ApiRequestClient(_baseUrl, _apiKey);
-                return (await client.Post<Command[]>($"shadow/{deviceId}", command))?.FirstOrDefault();
+                return (await client.Post<CommandDeatils[]>($"shadow/{deviceId}", command))?.FirstOrDefault();
             }
             catch (Exception ex)
             {
@@ -1037,12 +1037,12 @@ namespace WimdioApiProxy.v2
                 throw new WimdioApiClientException(ex.Message, ex);
             }
         }
-        public async Task<IEnumerable<Command>> ReadDeviceCommands(Guid deviceId, DateTime startDate, DateTime endDate)
+        public async Task<IEnumerable<CommandDeatils>> ReadDeviceCommands(Guid deviceId, DateTime startDate, DateTime endDate)
         {
             try
             {
                 var client = new ApiRequestClient(_baseUrl, _apiKey);
-                return await client.Get<Command[]>($"shadow/{deviceId}/{startDate.ToString("o")}/{endDate.ToString("o")}");
+                return await client.Get<CommandDeatils[]>($"shadow/{deviceId}/{startDate.ToString("o")}/{endDate.ToString("o")}");
             }
             catch (Exception ex)
             {
