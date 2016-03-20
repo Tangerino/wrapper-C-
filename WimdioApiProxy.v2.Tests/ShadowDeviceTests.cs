@@ -89,8 +89,8 @@ namespace WimdioApiProxy.v2.Tests
                 Comment = "Increase timeout"
             };
             asyncFunction = async () => command = await Client.CreateDeviceCommand(device.Id, newCommand);
-            asyncFunction.ShouldNotThrow($"CreateDeviceObject({device.Id}, newCommand) should not throw");
-            command.Should().NotBeNull($"CreateDeviceObject({device.Id}, newCommand) should not return NULL");
+            asyncFunction.ShouldNotThrow($"CreateDeviceCommand({device.Id}, newCommand) should not throw");
+            command.Should().NotBeNull($"CreateDeviceCommand({device.Id}, newCommand) should not return NULL");
             command.ObjectName.Should().Be(testObjectName);
             command.Comment.Should().Be(newCommand.Comment);
 
