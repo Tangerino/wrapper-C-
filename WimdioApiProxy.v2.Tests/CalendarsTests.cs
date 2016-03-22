@@ -52,24 +52,14 @@ namespace WimdioApiProxy.v2.Tests
             day.Day.Should().Be(newDay.Day);
             day.IsRecurrent.Should().Be(newDay.IsRecurrent);
 
-            // read special days list
-            IEnumerable<SpecialDay> days = null;
-            asyncFunction = async () => days = await Client.ReadSpecialDays();
-            asyncFunction.ShouldNotThrow();
-            days.Should().NotBeNullOrEmpty();
-            days.Any(x => x.Id == day.Id).Should().BeTrue();
-
             // update special day
             var updateDay = new NewSpecialDay(day) { Name = day.Name + " Updated" };
             asyncFunction = async () => await Client.UpdateSpecialDay(calendar.Id, day.Id, updateDay);
             asyncFunction.ShouldNotThrow();
 
-            // delete special days
-            days.Where(x => x.Name.StartsWith("EN ")).ToList().ForEach(x =>
-            {
-                asyncFunction = async () => await Client.DeleteSpecialDay(calendar.Id, day.Id);
-                asyncFunction.ShouldNotThrow();
-            });
+            // delete special day
+            asyncFunction = async () => await Client.DeleteSpecialDay(calendar.Id, day.Id);
+            asyncFunction.ShouldNotThrow();
 
 
             // create season
@@ -83,7 +73,7 @@ namespace WimdioApiProxy.v2.Tests
 
             // read seasons list
             IEnumerable<Season> seasons = null;
-            asyncFunction = async () => seasons = await Client.ReadSeasons();
+            asyncFunction = async () => seasons = await Client.ReadSeasons(calendar.Id);
             asyncFunction.ShouldNotThrow();
             seasons.Should().NotBeNullOrEmpty();
             seasons.Any(x => x.Id == season.Id).Should().BeTrue();
@@ -126,7 +116,7 @@ namespace WimdioApiProxy.v2.Tests
 
             // read periods
             IEnumerable<Period> periods = null;
-            asyncFunction = async () => periods = await Client.ReadPeriods();
+            asyncFunction = async () => periods = await Client.ReadPeriods(calendar.Id, season.Id);
             asyncFunction.ShouldNotThrow();
             periods.Should().NotBeNullOrEmpty();
             periods.Any(x => x.Id == period.Id).Should().BeTrue();

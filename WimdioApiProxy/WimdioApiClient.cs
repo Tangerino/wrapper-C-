@@ -1404,17 +1404,17 @@ namespace WimdioApiProxy.v2
                 throw new WimdioApiClientException(ex.Message, ex);
             }
         }
-        public async Task<IEnumerable<Season>> ReadSeasons()
+        public async Task<IEnumerable<Season>> ReadSeasons(Guid calendarId)
         {
             try
             {
                 var client = new ApiRequestClient(_baseUrl, _apiKey);
 
-                return await client.Get<IEnumerable<Season>>("seasons");
+                return await client.Get<IEnumerable<Season>>($"calendar/{calendarId}/seasons");
             }
             catch (Exception ex)
             {
-                _log.Error($"ReadSeasons() failed", ex);
+                _log.Error($"ReadSeasons(calendarId={calendarId}) failed", ex);
 
                 throw new WimdioApiClientException(ex.Message, ex);
             }
@@ -1465,17 +1465,17 @@ namespace WimdioApiProxy.v2
                 throw new WimdioApiClientException(ex.Message, ex);
             }
         }
-        public async Task<IEnumerable<Period>> ReadPeriods()
+        public async Task<IEnumerable<Period>> ReadPeriods(Guid calendarId, Guid seasonId)
         {
             try
             {
                 var client = new ApiRequestClient(_baseUrl, _apiKey);
 
-                return await client.Get<IEnumerable<Period>>("periods");
+                return await client.Get<IEnumerable<Period>>($"calendar/{calendarId}/season/{seasonId}/periods");
             }
             catch (Exception ex)
             {
-                _log.Error($"ReadPeriods() failed", ex);
+                _log.Error($"ReadPeriods(calendarId={calendarId}, seasonId={seasonId}) failed", ex);
 
                 throw new WimdioApiClientException(ex.Message, ex);
             }

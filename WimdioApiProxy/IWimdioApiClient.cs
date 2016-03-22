@@ -114,15 +114,14 @@ namespace WimdioApiProxy.v2
         Task<Calendar> UpdateCalendar(Guid calendarId, NewCalendar calendar);
         Task DeleteCalendar(Guid calendarId);
         Task<SpecialDay> CreateSpecialDay(Guid calendarId, NewSpecialDay SpecialDay);
-        Task<IEnumerable<SpecialDay>> ReadSpecialDays();
         Task UpdateSpecialDay(Guid calendarId, Guid SpecialDayId, NewSpecialDay SpecialDay);
         Task DeleteSpecialDay(Guid calendarId, Guid SpecialDayId);
         Task<Season> CreateSeason(Guid calendarId, NewSeason season);
-        Task<IEnumerable<Season>> ReadSeasons();
+        Task<IEnumerable<Season>> ReadSeasons(Guid calendarId);
         Task<Season> UpdateSeason(Guid calendarId, Guid seasonId, NewSeason season);
         Task DeleteSeason(Guid calendarId, Guid seasonId);
         Task<Period> CreatePeriod(Guid calendarId, Guid seasonId, NewPeriod period);
-        Task<IEnumerable<Period>> ReadPeriods();
+        Task<IEnumerable<Period>> ReadPeriods(Guid calendarId, Guid seasonId);
         Task<Period> UpdatePeriod(Guid calendarId, Guid seasonId, Guid periodId, NewPeriod period);
         Task DeletePeriod(Guid calendarId, Guid seasonId, Guid periodId);
     }
