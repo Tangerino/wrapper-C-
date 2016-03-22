@@ -50,6 +50,14 @@
   <ItemGroup>
     <Compile Include="DataTransferObjects\Accounts\Account.cs" />
     <Compile Include="DataTransferObjects\Accounts\Credentials.cs" />
+    <Compile Include="DataTransferObjects\Calendars\Calendar.cs" />
+    <Compile Include="DataTransferObjects\Calendars\NewCalendar.cs" />
+    <Compile Include="DataTransferObjects\Calendars\NewSeason.cs" />
+    <Compile Include="DataTransferObjects\Calendars\NewSpecialDay.cs" />
+    <Compile Include="DataTransferObjects\Calendars\NewPeriod.cs" />
+    <Compile Include="DataTransferObjects\Calendars\Period.cs" />
+    <Compile Include="DataTransferObjects\Calendars\Season.cs" />
+    <Compile Include="DataTransferObjects\Calendars\SpecialDay.cs" />
     <Compile Include="DataTransferObjects\Devices\UpdateDevice.cs" />
     <Compile Include="DataTransferObjects\Devices\NewDevice.cs" />
     <Compile Include="DataTransferObjects\Devices\Device.cs" />
@@ -115,7 +123,6 @@
     <Compile Include="WimdioApiClientException.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="DataTransferObjects\Calendars\" />
     <Folder Include="DataTransferObjects\TimeSeries\" />
   </ItemGroup>
   <ItemGroup>
