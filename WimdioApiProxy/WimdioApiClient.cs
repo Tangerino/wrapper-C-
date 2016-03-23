@@ -18,6 +18,7 @@ using WimdioApiProxy.v2.DataTransferObjects.DropBox;
 using WimdioApiProxy.v2.DataTransferObjects.Sensors;
 using WimdioApiProxy.v2.DataTransferObjects.ShadowDevice;
 using WimdioApiProxy.v2.DataTransferObjects.Calendars;
+using WimdioApiProxy.v2.DataTransferObjects.TimeSeries;
 
 namespace WimdioApiProxy.v2
 {
@@ -1506,6 +1507,22 @@ namespace WimdioApiProxy.v2
             catch (Exception ex)
             {
                 _log.Error($"DeletePeriod(calendarId={calendarId}, seasonId={seasonId}, periodId={periodId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+
+        public async Task<IEnumerable<CalendarData>> ReadCalendarData(Guid sensorId, DateTime startDate, DateTime endDate, DataOperation operation, TimeInterval interval, Guid calendarId)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return await client.Get<IEnumerable<CalendarData>>($"data/{sensorId}/{startDate.ToString("o")}/{endDate.ToString("o")}/{operation.ToString().ToLower()}/{interval.ToString().ToLower()}/{calendarId}/calendar");
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"ReadCalendarData(sensorId={sensorId}, startDate={startDate}, endDate={endDate}, operation={operation}, interval={interval}, calendarId={calendarId}) failed", ex);
 
                 throw new WimdioApiClientException(ex.Message, ex);
             }

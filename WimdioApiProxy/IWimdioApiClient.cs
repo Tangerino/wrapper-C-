@@ -13,6 +13,7 @@ using WimdioApiProxy.v2.DataTransferObjects.DropBox;
 using WimdioApiProxy.v2.DataTransferObjects.Sensors;
 using WimdioApiProxy.v2.DataTransferObjects.ShadowDevice;
 using WimdioApiProxy.v2.DataTransferObjects.Calendars;
+using WimdioApiProxy.v2.DataTransferObjects.TimeSeries;
 
 namespace WimdioApiProxy.v2
 {
@@ -124,5 +125,7 @@ namespace WimdioApiProxy.v2
         Task<IEnumerable<Period>> ReadPeriods(Guid calendarId, Guid seasonId);
         Task<Period> UpdatePeriod(Guid calendarId, Guid seasonId, Guid periodId, NewPeriod period);
         Task DeletePeriod(Guid calendarId, Guid seasonId, Guid periodId);
+
+        Task<IEnumerable<CalendarData>> ReadCalendarData(Guid sensorId, DateTime startDate, DateTime endDate, DataOperation operation, TimeInterval interval, Guid calendarId);
     }
 }

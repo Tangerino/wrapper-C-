@@ -74,6 +74,7 @@
     <Compile Include="SensorsTests.cs" />
     <Compile Include="ShadowDeviceTests.cs" />
     <Compile Include="ThingsTests.cs" />
+    <Compile Include="TimeSeriesTests.cs" />
     <Compile Include="UsersTests.cs" />
     <Compile Include="CalendarsTests.cs" />
   </ItemGroup>
