@@ -17,6 +17,7 @@ using WimdioApiProxy.v2.DataTransferObjects.Users;
 using WimdioApiProxy.v2.DataTransferObjects.DropBox;
 using WimdioApiProxy.v2.DataTransferObjects.Sensors;
 using WimdioApiProxy.v2.DataTransferObjects.ShadowDevice;
+using WimdioApiProxy.v2.DataTransferObjects.Calendars;
 
 namespace WimdioApiProxy.v2
 {
@@ -1261,6 +1262,250 @@ namespace WimdioApiProxy.v2
             catch (Exception ex)
             {
                 _log.Error($"DeleteEtl(etlId={etlId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+
+        public async Task<Calendar> CreateCalendar(NewCalendar calendar)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return (await client.Post<Calendar[]>("calendar", calendar))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"CreateCalendar(calendar={JsonConvert.SerializeObject(calendar)}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<IEnumerable<Calendar>> ReadCalendars()
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return await client.Get<IEnumerable<Calendar>>("calendars");
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"ReadCalendars() failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<Calendar> UpdateCalendar(Guid calendarId, NewCalendar calendar)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return (await client.Put<Calendar[]>($"calendar/{calendarId}", calendar))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"UpdateCalendar(calendarId={calendarId}, calendar={JsonConvert.SerializeObject(calendar)}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task DeleteCalendar(Guid calendarId)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                await client.Delete<BasicResponse>($"calendar/{calendarId}");
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"DeleteCalendar(calendarId={calendarId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+
+        public async Task<SpecialDay> CreateSpecialDay(Guid calendarId, NewSpecialDay specialDay)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return (await client.Post<SpecialDay[]>($"calendar/{calendarId}/specialday", specialDay))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"CreateSpecialDay(calendarId={calendarId}, specialDay={JsonConvert.SerializeObject(specialDay)}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<IEnumerable<SpecialDay>> ReadSpecialDays()
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return await client.Get<IEnumerable<SpecialDay>>("specialdays");
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"ReadSpecialDays() failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task UpdateSpecialDay(Guid calendarId, Guid specialDayId, NewSpecialDay specialDay)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                await client.Put<SpecialDay[]>($"calendar/{calendarId}/specialday/{specialDayId}", specialDay);
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"UpdateSpecialDay(calendarId={calendarId}, specialDayId={specialDayId}, specialDay={JsonConvert.SerializeObject(specialDay)}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task DeleteSpecialDay(Guid calendarId, Guid specialDayId)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                await client.Delete<BasicResponse>($"calendar/{calendarId}/specialday/{specialDayId}");
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"DeleteSpecialDay(calendarId={calendarId}, specialDayId={specialDayId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+
+        public async Task<Season> CreateSeason(Guid calendarId, NewSeason season)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return (await client.Post<Season[]>($"calendar/{calendarId}/season", season))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"CreateSeason(calendarId={calendarId}, season={JsonConvert.SerializeObject(season)}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<IEnumerable<Season>> ReadSeasons(Guid calendarId)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return await client.Get<IEnumerable<Season>>($"calendar/{calendarId}/seasons");
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"ReadSeasons(calendarId={calendarId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<Season> UpdateSeason(Guid calendarId, Guid seasonId, NewSeason season)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return (await client.Put<Season[]>($"calendar/{calendarId}/season/{seasonId}", season))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"UpdateSeason(calendarId={calendarId}, seasonId={seasonId}, season={JsonConvert.SerializeObject(season)}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task DeleteSeason(Guid calendarId, Guid seasonId)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                await client.Delete<BasicResponse>($"calendar/{calendarId}/season/{seasonId}");
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"DeleteSeason(calendarId={calendarId}, seasonId={seasonId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+
+        public async Task<Period> CreatePeriod(Guid calendarId, Guid seasonId, NewPeriod period)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return (await client.Post<Period[]>($"calendar/{calendarId}/season/{seasonId}/period", period))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"CreatePeriod(calendarId={calendarId}, seasonId={seasonId}, period={JsonConvert.SerializeObject(period)}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<IEnumerable<Period>> ReadPeriods(Guid calendarId, Guid seasonId)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return await client.Get<IEnumerable<Period>>($"calendar/{calendarId}/season/{seasonId}/periods");
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"ReadPeriods(calendarId={calendarId}, seasonId={seasonId}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task<Period> UpdatePeriod(Guid calendarId, Guid seasonId, Guid periodId, NewPeriod period)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                return (await client.Put<Period[]>($"calendar/{calendarId}/season/{seasonId}/period/{periodId}", period))?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"UpdatePeriod(calendarId={calendarId}, seasonId={seasonId}, periodId={periodId}, period={JsonConvert.SerializeObject(period)}) failed", ex);
+
+                throw new WimdioApiClientException(ex.Message, ex);
+            }
+        }
+        public async Task DeletePeriod(Guid calendarId, Guid seasonId, Guid periodId)
+        {
+            try
+            {
+                var client = new ApiRequestClient(_baseUrl, _apiKey);
+
+                await client.Delete<BasicResponse>($"calendar/{calendarId}/season/{seasonId}/period/{periodId}");
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"DeletePeriod(calendarId={calendarId}, seasonId={seasonId}, periodId={periodId}) failed", ex);
 
                 throw new WimdioApiClientException(ex.Message, ex);
             }
