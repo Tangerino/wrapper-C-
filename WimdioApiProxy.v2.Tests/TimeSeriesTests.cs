@@ -73,12 +73,13 @@ namespace WimdioApiProxy.v2.Tests
             var stopWatch = Stopwatch.StartNew();
             while (stopWatch.Elapsed < maxWaitingTime && ((calendarData == null) || (!calendarData.Any())))
             {
-                asyncFunction = async () => calendarData = await Client.ReadCalendarData(sensor.Id, DateTime.Today.ToUniversalTime(), DateTime.Today.AddDays(1).ToUniversalTime(), DataOperation.Sum, TimeInterval.Day, calendar.Id);
+                asyncFunction = async () => calendarData = await Client.ReadCalendarData(sensor.Id, DateTime.Today.AddDays(-2).ToUniversalTime(), DateTime.Today.AddDays(2).ToUniversalTime(), DataOperation.Sum, TimeInterval.Day, calendar.Id);
                 asyncFunction.ShouldNotThrow();
                 if (!calendarData?.Any() ?? false)
                     Thread.Sleep(TimeSpan.FromSeconds(10));
             }
             stopWatch.Stop();
+            Debug.WriteLine($"I was waiting for calendar data for {stopWatch.Elapsed.TotalSeconds} secs");
             calendarData.Should().NotBeNullOrEmpty();
             calendarData.All(x => x.Period.Equals(period.Name) && x.Season.Equals(season.Name)).Should().BeTrue();
 

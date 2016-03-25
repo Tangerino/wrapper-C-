@@ -15,6 +15,6 @@ namespace WimdioApiProxy.v2.DataTransferObjects.TimeSeries
         public string Period { get; set; }
 
         [JsonProperty("total")]
-        public int Total { get; set; }
+        public decimal Total { get; set; }
     }
 }
