@@ -13,7 +13,6 @@ namespace WimdioApiProxy.v2.DataTransferObjects.TimeSeries
 
     public enum TimeInterval
     {
-        Hour,
         Day,
         Month,
         Year,

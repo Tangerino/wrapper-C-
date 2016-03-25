@@ -719,7 +719,7 @@ namespace WimdioApiProxy.v2
                 throw new WimdioApiClientException(ex.Message, ex);
             }
         }
-        public async Task AddSensorData(string devkey, IEnumerable<SensorSerieWrapper> data)
+        public async Task AddSensorData(string devkey, IEnumerable<SensorSerie> data)
         {
             try
             {

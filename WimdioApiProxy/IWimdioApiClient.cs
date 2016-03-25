@@ -70,7 +70,7 @@ namespace WimdioApiProxy.v2
         Task<Sensor> ReadSensor(Guid sensorId);
         Task<Sensor> UpdateSensor(string devkey, string remoteId, UpdateSensor device);
         Task DeleteSensor(string devkey, string remoteId);
-        Task AddSensorData(string devkey, IEnumerable<SensorSerieWrapper> data);
+        Task AddSensorData(string devkey, IEnumerable<SensorSerie> data);
         Task<Rule> ReadSensorRule(Guid sensorId);
         Task<Rule> UpdateSensorRule(Guid sensorId, UpdateRule rule);
         Task<IEnumerable<Sensor>> ListSensors(Guid thingId);

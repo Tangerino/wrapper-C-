@@ -9,6 +9,7 @@ using WimdioApiProxy.v2.DataTransferObjects.Sensors;
 using WimdioApiProxy.v2.DataTransferObjects.Devices;
 using WimdioApiProxy.v2.DataTransferObjects.Calendars;
 using WimdioApiProxy.v2.DataTransferObjects.TimeSeries;
+using System.Threading;
 
 namespace WimdioApiProxy.v2.Tests
 {
@@ -68,12 +69,14 @@ namespace WimdioApiProxy.v2.Tests
 
             // read calendar data
             IEnumerable<CalendarData> calendarData = null;
-            var maxWaitingTime = TimeSpan.FromSeconds(60);
+            var maxWaitingTime = TimeSpan.FromSeconds(120);
             var stopWatch = Stopwatch.StartNew();
             while (stopWatch.Elapsed < maxWaitingTime && ((calendarData == null) || (!calendarData.Any())))
             {
-                asyncFunction = async () => calendarData = await Client.ReadCalendarData(sensor.Id, DateTime.Today.ToUniversalTime(), DateTime.Today.AddDays(1).ToUniversalTime(), DataOperation.Sum, TimeInterval.Hour, calendar.Id);
+                asyncFunction = async () => calendarData = await Client.ReadCalendarData(sensor.Id, DateTime.Today.ToUniversalTime(), DateTime.Today.AddDays(1).ToUniversalTime(), DataOperation.Sum, TimeInterval.Day, calendar.Id);
                 asyncFunction.ShouldNotThrow();
+                if (!calendarData?.Any() ?? false)
+                    Thread.Sleep(TimeSpan.FromSeconds(10));
             }
             stopWatch.Stop();
             calendarData.Should().NotBeNullOrEmpty();
