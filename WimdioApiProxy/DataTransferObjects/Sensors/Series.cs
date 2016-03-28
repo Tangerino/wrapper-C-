@@ -8,17 +8,11 @@ namespace WimdioApiProxy.v2.DataTransferObjects.Sensors
     {
         public SensorData()
         {
-            Series = new List<SensorSerieWrapper>();
+            Series = new List<SensorSerie>();
         }
 
         [JsonProperty("series")]
-        public List<SensorSerieWrapper> Series { get; set; }
-    }
-
-    public class SensorSerieWrapper
-    {
-        [JsonProperty("serie")]
-        public SensorSerie Serie { get; set; }
+        public List<SensorSerie> Series { get; set; }
     }
 
     public class SensorSerie

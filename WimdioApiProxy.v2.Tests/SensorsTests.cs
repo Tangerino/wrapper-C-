@@ -190,9 +190,9 @@ namespace WimdioApiProxy.v2.Tests
             };
             act.ShouldNotThrow();
             actual.Should().NotBeNull();
-            actual.Series?.FirstOrDefault()?.Serie?.RemoteId.Should().Be(expected.Series.FirstOrDefault().Serie.RemoteId);
-            actual.Series?.FirstOrDefault()?.Serie?.Values?.FirstOrDefault()?[0].ToString().Should().Be(expected.Series.FirstOrDefault().Serie.Values.FirstOrDefault()[0].ToString());
-            actual.Series?.FirstOrDefault()?.Serie?.Values?.FirstOrDefault()?[1].ToString().Should().Be(expected.Series.FirstOrDefault().Serie.Values.FirstOrDefault()[1].ToString());
+            actual.Series?.FirstOrDefault()?.RemoteId.Should().Be(expected.Series.FirstOrDefault().RemoteId);
+            actual.Series?.FirstOrDefault()?.Values?.FirstOrDefault()?[0].ToString().Should().Be(expected.Series.FirstOrDefault().Values.FirstOrDefault()[0].ToString());
+            actual.Series?.FirstOrDefault()?.Values?.FirstOrDefault()?[1].ToString().Should().Be(expected.Series.FirstOrDefault().Values.FirstOrDefault()[1].ToString());
         }
     }
 }

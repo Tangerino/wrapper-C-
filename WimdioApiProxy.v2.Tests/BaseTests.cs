@@ -199,7 +199,7 @@ namespace WimdioApiProxy.v2.Tests
         {
             var data = new SensorData
             {
-                Series = remoteIds.Select(x => new SensorSerieWrapper { Serie = new SensorSerie { RemoteId = x } }).ToList()
+                Series = remoteIds.Select(x => new SensorSerie { RemoteId = x }).ToList()
             };
 
             var now = DateTime.Now;
@@ -208,8 +208,8 @@ namespace WimdioApiProxy.v2.Tests
 
             data.Series.ForEach(x => 
             {
-                x.Serie.AddValue(now.AddSeconds(0), Math.Round(rnd.NextDouble() * 100, 2));
-                x.Serie.AddValue(now.AddSeconds(1), Math.Round(rnd.NextDouble() * 100, 2));
+                x.AddValue(now.AddSeconds(0), Math.Round(rnd.NextDouble() * 100, 2));
+                x.AddValue(now.AddSeconds(1), Math.Round(rnd.NextDouble() * 100, 2));
             });
 
             return data;

@@ -13,6 +13,7 @@ using WimdioApiProxy.v2.DataTransferObjects.DropBox;
 using WimdioApiProxy.v2.DataTransferObjects.Sensors;
 using WimdioApiProxy.v2.DataTransferObjects.ShadowDevice;
 using WimdioApiProxy.v2.DataTransferObjects.Calendars;
+using WimdioApiProxy.v2.DataTransferObjects.TimeSeries;
 
 namespace WimdioApiProxy.v2
 {
@@ -69,7 +70,7 @@ namespace WimdioApiProxy.v2
         Task<Sensor> ReadSensor(Guid sensorId);
         Task<Sensor> UpdateSensor(string devkey, string remoteId, UpdateSensor device);
         Task DeleteSensor(string devkey, string remoteId);
-        Task AddSensorData(string devkey, IEnumerable<SensorSerieWrapper> data);
+        Task AddSensorData(string devkey, IEnumerable<SensorSerie> data);
         Task<Rule> ReadSensorRule(Guid sensorId);
         Task<Rule> UpdateSensorRule(Guid sensorId, UpdateRule rule);
         Task<IEnumerable<Sensor>> ListSensors(Guid thingId);
@@ -124,5 +125,7 @@ namespace WimdioApiProxy.v2
         Task<IEnumerable<Period>> ReadPeriods(Guid calendarId, Guid seasonId);
         Task<Period> UpdatePeriod(Guid calendarId, Guid seasonId, Guid periodId, NewPeriod period);
         Task DeletePeriod(Guid calendarId, Guid seasonId, Guid periodId);
+
+        Task<IEnumerable<CalendarData>> ReadCalendarData(Guid sensorId, DateTime startDate, DateTime endDate, DataOperation operation, TimeInterval interval, Guid calendarId);
     }
 }
